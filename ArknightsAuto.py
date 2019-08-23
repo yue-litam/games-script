@@ -7,6 +7,7 @@ import time
 from PIL import Image
 import Moving
 from PIL import ImageFile
+import random
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -55,15 +56,47 @@ def main():
         loop += 1
         print('开始第', loop, '次战斗')
 
-        time.sleep(90)
+        # 随机性设置
+        first_pause = random.randint(10, 40)
+        second_pause = random.randint(10, 40)
+        final_pause = 90 - first_pause - second_pause - 2
+        if final_pause < 0:
+            first_pause *= -1
+
+        time.sleep(first_pause)
+
+        # 随机变速一次
+        tap_scale((820, 40), scale)
+        time.sleep(1)
+        tap_scale((820, 40), scale)
+
+        # 随机停顿一次
+        time.sleep(second_pause)
+        tap_scale((900, 40), scale)
+        time.sleep(1)
+        tap_scale((900, 40), scale)
+
+        if final_pause != 0:
+            time.sleep(final_pause)
+
         val = 1
         while val > 0.06:
             time.sleep(2)
-            print("判断是否战斗结束")
-            # 获取作战结果
+
+            print("判断等级提升中 or 判断是否战斗结束")
+            # 判断是否有等级提升
             im = screenshot.pull_screenshot()
             im = screenshot.Image2OpenCV(im)
-            pos, val = Moving.finish(im)
+            pos, val = Moving.rankup(im)
+            if val < 0.1:
+                print('等级提升，增加一次触摸/点击')
+                tap_scale((900, 40), scale)
+                time.sleep(3)
+                tap_scale((900, 40), scale) # 点击后必定是战斗结算界面，无需再次判断，3s后直接再次点击
+            else:
+                print('等级未提升，返回关卡介绍页')
+                im = screenshot.Image2OpenCV(im)
+                pos, val = Moving.finish(im)
 
         # 返回关卡界面
         tap_scale((900, 100), scale)
