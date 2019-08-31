@@ -1,3 +1,9 @@
-.idea
-__pycache__
-arknights.jpg
+screen.png
+origin
+
+# jetbrain pycharm
+.idea/
+*.iml
+
+# macOS
+.DS_Store
