@@ -1,9 +1,16 @@
+### project files ###
+test/
+temp/
+arknights_android/
 screen.png
 origin
 
-# jetbrain pycharm
+### python ### 
+__pycache__/
+
+### jetbrain pycharm ###
 .idea/
 *.iml
 
-# macOS
+### macOS ###
 .DS_Store

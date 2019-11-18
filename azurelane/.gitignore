@@ -1,0 +1,9 @@
+screen.png
+origin/
+
+# jetbrain pycharm
+.idea/
+*.iml
+
+# macOS
+.DS_Store

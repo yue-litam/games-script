@@ -4,8 +4,8 @@ import wda
 
 
 def main():
-    image_path = './screen.png'
-    feature_path = './iphone_se_0.7.52/feature/lack_of_mind_detection.png'
+    image_path = './temp/screen.png'
+    feature_path = './assets/640x1136/feature/exchange_intellect_confirm.png'
 
     c = wda.Client()
     _ = c.screenshot(image_path)
