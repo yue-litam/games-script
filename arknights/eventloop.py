@@ -1,9 +1,17 @@
 # coding: utf-8
 
 import time
-from common import tool
-from scene import Scene
+import sys
 from configparser import ConfigParser
+
+sys.path.insert(1, '../common')
+
+try:
+    import tool
+    from scene import Scene
+except Exception as importEx:
+    print(importEx)
+    exit(1)
 
 
 class EventLoop:

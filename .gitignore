@@ -4,6 +4,7 @@ temp/
 arknights_android/
 screen.png
 origin
+config.ini
 
 ### python ### 
 __pycache__/
