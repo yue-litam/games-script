@@ -5,7 +5,7 @@ import wda
 
 def main():
     image_path = './temp/screen.png'
-    feature_path = './assets/640x1136/feature/exchange_intellect_confirm.png'
+    feature_path = './arknights/assets/640x1136/feature/level_info_detection.png'
 
     c = wda.Client()
     _ = c.screenshot(image_path)

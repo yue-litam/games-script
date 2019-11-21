@@ -13,7 +13,7 @@ def device_detect_feature_location_handler(feature, screen):
 
 
 def get_similarity(template, img, scene=None, threshold=0.8):
-    _, _ = template.shape[::-1]
+    # _, _ = template.shape[::-1]
     res = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
     loc = np.where(res >= threshold)
     found = 0
