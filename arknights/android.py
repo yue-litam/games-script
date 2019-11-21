@@ -29,8 +29,8 @@ class AndroidEventLoop(EventLoop):
     SCREENSHOT_WAY = 3
     adb = None
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, prefix=''):
+        super().__init__(prefix)
 
         self.adb = auto_adb()
         self.adb.test_device()

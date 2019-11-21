@@ -6,8 +6,11 @@ import sys
 sys.path.insert(1, '../common')
 
 try:
+    from configparser import ConfigParser
     from common import tool
     from common.scene import Scene
+    from loadscenes import *
+    from runtime import Runtime
 except Exception as importEx:
     print(importEx)
     exit(1)
@@ -15,9 +18,35 @@ except Exception as importEx:
 
 class EventLoop:
     scenes = None
+    runtime = None
 
-    def __init__(self):
-        pass
+    def __init__(self, prefix=''):
+        cfg = ConfigParser()
+        rt = Runtime()
+        try:
+            cfg.read('config.ini')
+            rt.use_stone_auto = cfg.getboolean('intellect', 'use_stone')
+            rt.use_stone_max = cfg.getint('intellect', 'use_stone_max')
+            rt.use_pharmacy_auto = cfg.getboolean('intellect', 'use_pharmacy')
+            rt.use_pharmacy_max = cfg.getint('intellect', 'use_pharmacy_max')
+            print('理智不足时')
+            print('\t自动使用药剂:{0}, 最多使用数量:{1}'.format(rt.use_pharmacy_auto, rt.use_pharmacy_max))
+            print('\t自动使用石头:{0}, 最多使用数量:{1}'.format(rt.use_stone_auto, rt.use_stone_max))
+            print('')
+        except Exception as ex:
+            print(ex)
+
+        self.runtime = rt
+        self.scenes = [
+            prts_disable_detection(self, prefix),  # 战斗关卡确认出击
+            account_upgrade_detection(self, prefix),  # 战斗结束后账号等级提升
+            level_info_detection(self, prefix),  # 战斗关卡确认出击
+            level_team_detection(self, prefix),  # 战斗前队伍预览
+            level_finish_detection(self, prefix),  # 战斗结束后账号等级提升
+            prts_running_scene(self, prefix),  # 副本还在进行中
+            exchange_intellect_by_pharmacy(self, prefix),  # 理智不足时有可使用的药剂
+            exchange_intellect_by_stone(self, prefix),  # 理智不足时有可使用的石头
+        ]
 
     def take_screen_shot_handler(self):
         raise NotImplementedError("Should have implemented this: 截屏方法")

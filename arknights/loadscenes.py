@@ -34,13 +34,13 @@ def prts_running_scene(_, prefix=''):
     return Scene('level_fighting_detection.png', touch_nothing, None, prefix)
 
 
-def level_team_detection(device=None, prefix='', runtime=None):
-    if runtime is None:
+def level_team_detection(device=None, prefix=''):
+    if device.runtime is None:
         raise Exception('runtime config is None')
 
     def touch(template, img):
-        runtime.round_count += 1
-        print('\n第 %03d 次副本' % runtime.round_count, sep='', end='')
+        device.runtime.round_count += 1
+        print('\n第 %03d 次副本' % device.runtime.round_count, sep='', end='')
         if device is not None:
             device.execute_tap_action(template, img)
 
@@ -55,17 +55,17 @@ def level_finish_detection(device=None, prefix=''):
     return Scene('level_finish_detection.png', touch, None, prefix)
 
 
-def exchange_intellect_by_pharmacy(device=None, prefix='', runtime=None):
-    if runtime is None:
+def exchange_intellect_by_pharmacy(device=None, prefix=''):
+    if device.runtime is None:
         raise Exception('runtime config is None')
 
     def touch(template, img):
-        if runtime.use_pharmacy_auto:
-            if runtime.used_pharmacy_count >= runtime.use_pharmacy_max:
+        if device.runtime.use_pharmacy_auto:
+            if device.runtime.used_pharmacy_count >= device.runtime.use_pharmacy_max:
                 print('\n已到达预设的可用理智上限, 脚本将退出')
                 exit(0)
             else:
-                runtime.used_pharmacy_count += 1
+                device.runtime.used_pharmacy_count += 1
                 if device is not None:
                     device.execute_tap_action(template, img)
         else:
@@ -76,17 +76,17 @@ def exchange_intellect_by_pharmacy(device=None, prefix='', runtime=None):
                  "exchange_intellect_confirm.png", prefix)
 
 
-def exchange_intellect_by_stone(device=None, prefix='', runtime=None):
-    if runtime is None:
+def exchange_intellect_by_stone(device=None, prefix=''):
+    if device.runtime is None:
         raise Exception('runtime config is None')
 
     def touch(template, img):
-        if runtime.use_stone_auto:
-            if runtime.used_stone_count >= runtime.use_stone_max:
+        if device.runtime.use_stone_auto:
+            if device.runtime.used_stone_count >= device.runtime.use_stone_max:
                 print('\n已到达预设的可用理智上限, 脚本将退出')
                 exit(0)
             else:
-                runtime.used_stone_count += 1
+                device.runtime.used_stone_count += 1
                 if device is not None:
                     device.execute_tap_action(template, img)
         else:
