@@ -11,8 +11,9 @@ screen_path = 'temp/screen.png'
 class IOSEventLoop(EventLoop):
     client = None
     session = None
+    dpi = 1
 
-    def __init__(self, prefix):
+    def __init__(self, prefix, dpi=1):
         super().__init__(prefix)
 
         # c = wda.Client('http://192.168.3.101:8100')
@@ -32,4 +33,4 @@ class IOSEventLoop(EventLoop):
         return img
 
     def device_tap_handler(self, pos_x, pos_y):
-        self.session.tap(pos_x, pos_y)
+        self.session.tap(pos_x / self.dpi, pos_y / self.dpi)

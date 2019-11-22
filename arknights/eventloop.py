@@ -2,11 +2,11 @@
 
 import time
 import sys
+from configparser import ConfigParser
 
-sys.path.insert(1, '../common')
+sys.path.insert(1, '../')
 
 try:
-    from configparser import ConfigParser
     from common import tool
     from common.scene import Scene
     from loadscenes import *
