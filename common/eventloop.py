@@ -37,7 +37,7 @@ class EventLoop:
         # 场景匹配
         ss = None
         for scene in self.scenes:
-            if tool.get_similarity(scene.imageTemplate, screen) == 1:
+            if tool.get_similarity(scene.imageTemplate, screen, scene.threshold) == 1:
                 ss = scene
                 break
         if ss is None:

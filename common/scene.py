@@ -14,6 +14,7 @@ class Scene:
     after_action = None  # 后置处理函数
     action_image_w = 0
     action_image_h = 0
+    threshold = 0.8  # 匹配度，默认80%，可根据不同的素材调整
 
     def __init__(self,
                  image,
@@ -25,6 +26,7 @@ class Scene:
                  name=None,
                  before_action=None,
                  after_action=None,
+                 threshold=0.8
                  ):
 
         self.image = image
@@ -41,16 +43,17 @@ class Scene:
         self.after_action = after_action
         self.action_tap_offset_x = action_tap_offset_x
         self.action_tap_offset_y = action_tap_offset_y
+        self.threshold = threshold
 
         # load resources
         self.imageTemplate = cv2.imread(prefix + self.image, 0)
         if self.imageTemplate is None:
-            print("Error : ImageName is wrong")
+            print("Error : Image {0} not exists".format(self.image))
             exit(4)
 
         self.actionTemplate = cv2.imread(prefix + self.action_image, 0)
         if self.actionTemplate is None:
-            print("Error : ActionButtonName is wrong")
+            print("Error : ActionImage {0} not exists".format(self.action_image))
             exit(4)
         self.action_image_w, self.action_image_h = self.actionTemplate.shape[::-1]
 
