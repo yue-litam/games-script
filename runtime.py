@@ -4,6 +4,7 @@ from configparser import ConfigParser
 class Runtime:
     # ---- global config ----
     round_count = 0
+    start_flag_printed = False
     log_level = 'info'
     game = ''
     # ---- global config ----
@@ -20,12 +21,14 @@ class Runtime:
     use_stone_auto = False
     use_stone_max = 0
     used_stone_count = 0
+
+    max_repeat_count = -1
     # ---- arknights config ----
 
     def __init__(self):
         cfg = ConfigParser()
         try:
-            cfg.read('config.ini')
+            cfg.read('config.ini', encoding="utf-8")
             self.log_level = cfg.get('global', 'log_level')
             self.game = cfg.get('global', 'game_name')
 
@@ -33,8 +36,10 @@ class Runtime:
             self.use_stone_max = cfg.getint('arknights', 'intellect_use_stone_max')
             self.use_pharmacy_auto = cfg.getboolean('arknights', 'intellect_use_pharmacy')
             self.use_pharmacy_max = cfg.getint('arknights', 'intellect_use_pharmacy_max')
+            self.max_repeat_count = cfg.getint('arknights', 'max_repeat_count')
 
             print('明日方舟')
+            print('  - 最多复读次数: {0}'.format(self.max_repeat_count))
             print('  - 理智不足时')
             print('    - 自动使用药剂:{0}, 最多使用数量:{1}'.format(self.use_pharmacy_auto, self.use_pharmacy_max))
             print('    - 自动使用石头:{0}, 最多使用数量:{1}'.format(self.use_stone_auto, self.use_stone_max))

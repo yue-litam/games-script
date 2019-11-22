@@ -28,7 +28,7 @@ if __name__ == '__main__':
         exit(0)
 
     # 3. init device
-    device = AndroidDevice(runtime=rt, address='http://127.0.0.1:7555')
+    device = AndroidDevice(runtime=rt, address='127.0.0.1:7555')
 
     # 4. init event loop and start.
     worker = EventLoop(scenes, device)
