@@ -20,6 +20,7 @@ class IOSEventLoop(EventLoop):
         # 如果使用了WDA安装过程中提到的"libimobiledevice"进行端口转发，则替换为http://localhost:8100
         self.client = wda.Client()
         self.session = self.client.session()
+        self.dpi = dpi
 
         # 获取一张当前手机的截图
         _ = self.client.screenshot(screen_path)
