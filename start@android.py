@@ -21,7 +21,7 @@ if __name__ == '__main__':
     scenes = None
     if rt.game == 'arknights':
         scenes = arknights_scenes(prefix, runtime=rt)
-    elif rt.game == 'arknights':
+    elif rt.game == 'azurelane':
         scenes = azurelane_scenes(prefix, runtime=rt)
     else:
         print('请指定游戏名称')
