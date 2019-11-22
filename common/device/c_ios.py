@@ -3,22 +3,20 @@
 import wda
 import cv2
 
-from eventloop import EventLoop
+from common.device.i_device import Device
 
 screen_path = 'temp/screen.png'
 
 
-class IOSEventLoop(EventLoop):
+class IOSDevice(Device):
     client = None
     session = None
     dpi = 1
 
-    def __init__(self, prefix, dpi=1):
-        super().__init__(prefix)
+    def __init__(self, dpi=1, runtime=None, address='http://127.0.0.1:8100'):
+        super().__init__(runtime)
 
-        # c = wda.Client('http://192.168.3.101:8100')
-        # 如果使用了WDA安装过程中提到的"libimobiledevice"进行端口转发，则替换为http://localhost:8100
-        self.client = wda.Client()
+        self.client = wda.Client(address)
         self.session = self.client.session()
         self.dpi = dpi
 
@@ -28,10 +26,13 @@ class IOSEventLoop(EventLoop):
         width, height = screen.shape[::-1]
         print("\nScreenWidth: {0}, ScreenHeight: {1}\n".format(width, height))
 
-    def take_screen_shot_handler(self):
+    def screen_capture_handler(self):
         _ = self.client.screenshot(screen_path)
         img = cv2.imread(screen_path, 0)
         return img
 
-    def device_tap_handler(self, pos_x, pos_y):
-        self.session.tap(pos_x / self.dpi, pos_y / self.dpi)
+    def tap_handler(self, pos_x, pos_y):
+        x = pos_x / self.dpi
+        y = pos_y / self.dpi
+        super().debug('actually tap position: {0}, {1}'.format(x, y))
+        self.session.tap(x, y)

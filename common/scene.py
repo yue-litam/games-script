@@ -4,30 +4,54 @@ import cv2
 
 
 class Scene:
-    image_name = ''
-    action = ''
-    action_button_name = None
+    name = ''  # 场景名称
+    image = ''  # 场景特征照片
+    before_action = None  # 前置处理函数
+    action_tap = True  # 该场景是否需要点击屏幕
+    action_tap_offset_x = 0  # 该场景点击屏幕时在X轴方向偏移
+    action_tap_offset_y = 0  # 该场景点击屏幕时在Y轴方向偏移
+    action_image = ''  # 该场景点击位置的特征照片
+    after_action = None  # 后置处理函数
+    action_image_w = 0
+    action_image_h = 0
 
-    # image_name : the image to scan to identify the scene
-    # action : the action to execute upon match with image_name, receives (template, img), where
-    #           template is the cv2 rep of the action_button_name below, and the image is the
-    #           current screen shot
-    # action_button_name: sometimes we want different button to be clicked while not checking this button
-    #           the default value is the same as image_name
-    def __init__(self, image_name, action, action_button_name=None, assets_path_prefix=''):
-        if action_button_name is None:
-            action_button_name = image_name
-        self.image_name = image_name
-        self.action = action
-        self.action_button_name = action_button_name
+    def __init__(self,
+                 image,
+                 prefix='',
+                 action_image=None,
+                 action_tap=True,
+                 action_tap_offset_x=0,
+                 action_tap_offset_y=0,
+                 name=None,
+                 before_action=None,
+                 after_action=None,
+                 ):
+
+        self.image = image
+        if name is None:
+            self.name = image
+        else:
+            self.name = name
+        if action_image is None:
+            self.action_image = image
+        else:
+            self.action_image = action_image
+        self.action_tap = action_tap
+        self.before_action = before_action
+        self.after_action = after_action
+        self.action_tap_offset_x = action_tap_offset_x
+        self.action_tap_offset_y = action_tap_offset_y
 
         # load resources
-        self.imageTemplate = cv2.imread(assets_path_prefix + image_name, 0)
+        self.imageTemplate = cv2.imread(prefix + self.image, 0)
         if self.imageTemplate is None:
             print("Error : ImageName is wrong")
+            exit(4)
 
-        self.actionTemplate = cv2.imread(assets_path_prefix + action_button_name, 0)
+        self.actionTemplate = cv2.imread(prefix + self.action_image, 0)
         if self.actionTemplate is None:
             print("Error : ActionButtonName is wrong")
+            exit(4)
+        self.action_image_w, self.action_image_h = self.actionTemplate.shape[::-1]
 
-        print("scene register: <{0}> action: <{1}>".format(image_name, action_button_name))
+        print("scene register: <{0}> action: <{1}>".format(self.name, self.action_image))

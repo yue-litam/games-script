@@ -1,13 +1,13 @@
 import cv2
 import numpy as np
-from arknights.android import AndroidEventLoop
+from common.device.c_android import AndroidDevice
 
 screen_path = 'temp/screen.png'
 
 
 def main():
-    device = AndroidEventLoop()
-    screen = np.asarray(device.pull_screenshot())  # 加载图片
+    device = AndroidDevice()
+    screen = np.asarray(device.screen_capture_as_image())  # 加载图片
     screen_gray = cv2.cvtColor(screen, cv2.COLOR_RGB2GRAY)  # 灰度转换
 
     feature_path = './arknights/assets/640x1136/feature/level_team_detection.png'

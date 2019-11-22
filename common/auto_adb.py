@@ -31,7 +31,6 @@ class auto_adb():
                 except OSError:
                     pass
             print('请安装 ADB 及驱动并配置环境变量')
-            print('具体链接: https://github.com/wangshub/wechat_jump_game/wiki')
             exit(1)
 
     def get_screen(self, d=''):
