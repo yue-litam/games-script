@@ -26,9 +26,11 @@ class IOSDevice(Device):
         width, height = screen.shape[::-1]
         print("\nScreenWidth: {0}, ScreenHeight: {1}\n".format(width, height))
 
-    def screen_capture_handler(self):
-        _ = self.client.screenshot(screen_path)
-        img = cv2.imread(screen_path, 0)
+    def screen_capture_handler(self, file_name=''):
+        if file_name == '':
+            file_name = screen_path
+        _ = self.client.screenshot(file_name)
+        img = cv2.imread(file_name, 0)
         return img
 
     def tap_handler(self, pos_x, pos_y):

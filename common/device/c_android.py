@@ -20,7 +20,7 @@ except Exception as ex:
     exit(1)
 
 screen_name = 'screen.png'
-screen_path = 'temp/' + screen_name
+screen_path = './temp/' + screen_name
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
@@ -41,8 +41,8 @@ class AndroidDevice(Device):
         super().debug('actually tap position: {0}, {1}'.format(pos_x, pos_y))
         self.adb.run('shell input tap {} {}'.format(pos_x, pos_y))
 
-    def screen_capture_handler(self):
-        screen = self.__pull_screenshot()
+    def screen_capture_handler(self, file_name=''):
+        screen = self.__pull_screenshot(file_name)
         img = cv2.cvtColor(numpy.asarray(screen), cv2.COLOR_RGB2GRAY)
         return img
 
@@ -69,7 +69,7 @@ class AndroidDevice(Device):
                 print(pssEx)
                 self.SCREENSHOT_WAY -= 1
 
-    def __pull_screenshot(self):
+    def __pull_screenshot(self, file_name=''):
         if 1 <= self.SCREENSHOT_WAY <= 3:
             process = subprocess.Popen(
                 self.adb.adb_path + ' shell screencap -p',
@@ -81,6 +81,8 @@ class AndroidDevice(Device):
                 binary_screenshot = binary_screenshot.replace(b'\r\r\n', b'\n')
             return Image.open(StringIO(binary_screenshot))
         elif self.SCREENSHOT_WAY == 0:
+            if file_name == '':
+                file_name = screen_path
             self.adb.run('shell screencap -p /sdcard/' + screen_name)
-            self.adb.run('pull /sdcard/' + screen_name + ' ./' + screen_path)
-            return Image.open('./' + screen_path)
+            self.adb.run('pull /sdcard/' + screen_name + ' ' + file_name)
+            return Image.open('' + file_name)

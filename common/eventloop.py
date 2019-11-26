@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import time
+import os
 
 # import sys
 # sys.path.insert(1, '../')
@@ -41,6 +42,11 @@ class EventLoop:
                 ss = scene
                 break
         if ss is None:
+            self.__debug('当前屏幕无法识别出任何已知匹配的场景')
+            unknown_scene_path = './temp/unknown_scene.png'
+            if os.path.exists(unknown_scene_path) :
+                os.remove(unknown_scene_path)
+            self.device.screen_capture_handler(unknown_scene_path)
             return
 
         # 场景匹配成功后

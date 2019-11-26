@@ -35,14 +35,19 @@ def battle_prepare(runtime, prefix=''):
 def battle_post_view_new_character_confirmation(prefix=''):
     return Scene("battle_post_new_character_detection.png", prefix,
                  name='战役获得SR(或以上)级别角色',
-                 action_tap_offset_y=200)
+                 action_tap_offset_y=-100)
+
+
+def difficult_medium(prefix=''):
+    return Scene("difficult_medium.png", prefix,
+                 action_tap_offset_x=40, action_tap_offset_y=30, threshold=0.7)
 
 
 def load_scenes(prefix, runtime):
     return [
-        Scene("battle_" + runtime.battle_no + '.png', prefix),
-        Scene("boss_icon_detection.png", prefix, threshold=0.7),
+        Scene("boss_icon_detection2.png", prefix, threshold=0.7),
         Scene("enemy_level.png", prefix, threshold=0.6),
+        difficult_medium(prefix),
         Scene("map_ship_type_1.png", prefix, threshold=0.6),  # 判断侦查舰队
         Scene("map_ship_type_2.png", prefix, threshold=0.6),  # 判断航母舰队
         Scene("map_ship_type_3.png", prefix, threshold=0.6),  # 判断主力舰队
@@ -59,5 +64,8 @@ def load_scenes(prefix, runtime):
         Scene("battle_post_view_s_level.png", prefix),
         Scene("battle_post_view_get_items_detection.png", prefix),
         Scene("battle_post_confirm_detection.png", prefix, action_image="battle_post_confirm_button.png"),
-        Scene("info_box_detection.png", prefix=prefix, action_image="cross_close_button.png")
+        Scene("special_operation_enable_warn.png", prefix, action_image="confirm.png"),
+        Scene("info_box_detection.png", prefix=prefix, action_image="cross_close_button.png"),
+        Scene("battle_" + runtime.battle_no + '.png', prefix),
+        Scene("now_loading.png", prefix)
     ]
