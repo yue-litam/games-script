@@ -1,5 +1,7 @@
 ### project files ###
 test/
+arknights/temp
+azurelane/temp
 temp/*.png
 origin
 config.ini

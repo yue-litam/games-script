@@ -14,7 +14,7 @@
 >
 > 我觉得我可能是一个假的面向对象编程程序猿，所以没有对象……（苦笑）
 
-U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.com/UltimatePea/AzureLaneGame_AutomationScript) ，可惜脚本最后一次更新已经是2年前了，可能已经退坑了吧。我也希望自己能早日退坑成功（两次退坑失败的提督又被另一位刀客特拖进了方舟的深渊）。如果有幸得到同行（无论是提督还是刀客特）的使用，祝各位护肝成功吧。
+U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.com/UltimatePea/AzureLaneGame_AutomationScript) ，可惜脚本最后一次更新已经是2年前了，可能已经退坑了吧。我也希望自己能早日退坑成功（两次退坑失败的提督又被另一位刀客特拖进了方舟的深渊）。如果这个项目得到同行（无论是提督还是刀客特）的使用，也希望各位护肝成功。
 
 也感谢另一位作者提供了 `auto_adb.py` 连接操作安卓模拟器的方法，笔主在其基础上修改以支持了远程连接模拟器进行操作（笔者使用了MacBook Pro去控制一台windows10下的安卓模拟器，MacBook跑模拟器实在太卡了……苦笑+1）。但是因为一不注意没有留下该作者的 Github 仓库地址，非常抱歉！！！后面笔主会继续尝试寻找并补到该README中的。非常抱歉！！！
 
@@ -38,19 +38,11 @@ U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.
 
     - `640x1136` - 适用于 iphone SE 分辨率的素材
 
-    - `840x1440` - 因为有时候也用win10+网易mumu在安卓端复读，也提供了一份模拟器的素材
-
     - `1125x2436` - 适用于 iphone 11 Pro 分辨率的素材 
 
       > 空的，暂时买不起:-)
 
-  - `temp` - 复读期间生成的截屏图片临时存放目录
-
-  - `start@ios.py` - ios平台执行这个文件
-
-  - `start@android.py` - 安卓平台执行这个文件
-
-  - `config.ini` - 复读的可选配置
+  - `loadscene.py` - 加载游戏中需要识别的场景特征文件
 
 - `azurelane` - 碧蓝航线复读所需的文件
 
@@ -58,9 +50,22 @@ U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.
 
 - `common`
 
+  - `device` - 对ios和安卓设备的获取截图、点击等操作进行抽象和封装
+  - `i_device.py` - 抽象的接口
+    - `c_ios.py` - ios平台的接口实现
+    - `c_android.py` - 安卓平台的接口实现
   - `auto_adb.py` - 对安卓平台的adb调用的封装
+  - `eventloop.py` - 复读机核心
   - `scene.py` - 对复读机可能遇到的场景的封装类
   - `tool.py` - 工具类，提供判断一张图片中是否包含另一张图片、所在位置的方法
+
+- `temp` - 复读期间生成的截屏图片临时存放目录
+
+- `default-config.ini` - 默认配置文件
+
+- `config.ini` - 该文件由上面的 default-config.ini 修改而来，用于指定复读哪个游戏、游戏复读时可选的额外配置等
+
+- `start@ios.py` & `start@android.py` - 对应 ios平台/安卓平台的执行文件
 
 - `detect-test@ios.py` & `detect-test@android.py` - 用来测试 OpenCV 识别特征图片在设备截屏中的具体位置用的脚本
 
@@ -72,11 +77,12 @@ U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.
 
 - Python 3.x
 - iOS
-  - 一台 iPhone 或 iPad
+  - 一台 iPhone 或 iPad（建议根据实际设备重新截取场景特征）
   - 一台装有macOS的电脑
   - Xcode.app
-  - WebDriverAgent
-  - libimobiledevice（可选）
+  - WebDriverAgent [Github地址](https://github.com/appium/WebDriverAgent)，[iOS设备安装引导](https://testerhome.com/topics/7220)
+  - openatx/facebook-wda [Github地址](https://github.com/openatx/facebook-wda)
+  - libimobiledevice（可选，使用homebrew安装）
 - 安卓
   - 安卓模拟器（mumu、夜神或其它）
   - Putty（可选）
@@ -85,62 +91,84 @@ U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.
 
 #### 运行步骤
 
-1. 将对应游戏目录下的`default-config.ini`改为`config.ini`
+1. 首次使用，将目录下的`default-config.ini`改为`config.ini`
+
+   1. 在 `config.ini` 文件中配置好需要复读的游戏字段 `game_name=azurelane` 或 `game_name=arknights`
+   2. （可选）其它一些配置
+
 2. iOS平台
-   1. 启动 Xcode.app 并打开 WebDriverAgent ，连接手机后在 Xcode 中选中对应的手机，手机需要和电脑位于同一个局域网
-   
+   1. 启动 Xcode.app 并打开 WebDriverAgent 项目，连接手机后在 Xcode 中选中对应的手机，手机需要和电脑位于同一个局域网
+
    2. Command + U 启动 Test ，Xcode 会将 WebDriverAgent 安装到设备上（此时手机会出现一个无图标的应用程序）
-   
+
+      > 如果Xcode提示Could not launch，根据提示判断是否需要到 设置 -> 通用 执行信任开发者证书操作
+
    3. 观察 Xcode 的 Console 控制台输出（快捷键 Shift+Command+C 打开），最底部会有一串访问地址
-      
+
       ```
       ServerURLHere->http://${ip地址}:8100<-ServerURLHere
       ```
-      
+
    4. 取出上面的地址`http://${ip地址}:8100`到浏览器访问
-      如果可以获得一个json响应，打开文件 start@ios.py ，找到 class IOSEventLoop 的初始化方法，编辑 client 的创建方法为如下，保存文件并退出
-      
+      如果可以获得一个json响应，打开文件 start@ios.py ，找到 main 方法，编辑 device 的构建参数 address 为实际的ip加端口，保存文件并退出
+
       ``` python
-      def __init__(self, assets_path_prefix):
-        super().__init__(assets_path_prefix)
-      
-        c = wda.Client('http://${ip地址}:8100')
-        self.session = self.client.session()
+      if __name__ == '__main__':
+          ...
+          # 3. init device
+          dpi = 2  # iphone SE 的屏幕DPI为2，使用wda发送触摸指令时坐标(x,y)需要除以相应的dpi
+          device = IOSDevice(dpi, runtime=rt, address='http://127.0.0.1:8100')
+          ...
       ```
-      
+
       如果无法获得json响应
-      
-      1. 先安装 libimobiledevice
+
+      1. 新开一个终端，任意目录下，输入 `brew install libimobiledevice --HEAD` 安装 libimobiledevice
+
+         > 如果提示 brew command not found 请先百度或谷歌安装 homebrew
+
       2. 新开一个终端，任意目录下，输入 `iproxy 8100 8100` 
-      
-   5. 如果使用的设备存放的素材路径不一致，打开文件 start@ios.py 在最底部的`main()`函数中编辑对应的素材位置前缀，保存文件退出
-     
+
+   5. 如果使用的设备存放的素材路径不一致，打开文件 start@ios.py 在 `main` 方法中编辑对应的素材位置前缀，保存文件退出
+
       ``` python
       if __name__ == '__main__':
-        IOSEventLoop('此处更换为实际的素材的目录前缀').start()
+          ...
+          # 2. init scenes
+          prefix = rt.game + '/assets/640x1136/feature/'
+          ...
       ```
-   
-   6. 新开一个终端，切换到对应游戏目录下，输入 `python3 start@ios.py`
+
+   6. 新开一个终端，切换到项目目录下，输入 `python3 start@ios.py`
+
 3. Android平台（以网易mumu模拟器为例）
-   1. 新开一个终端/命令行，输入 `adb connect 127.0.0.1:7500`
+   1. 将模拟器分辨率设置为 640x1136 （或者根据实际分辨率重新截取特征素材）
      
-      > 7500是网易mumu模拟器的ADB监听端口
-   2. 输入 `adb devices` 列出当前所有设备，如果有多个，需要打开文件 start@android.py ，找到 class AndroidEventLoop 的初始化方法，在adb对象创建时传入对应的设备地址与端口号，例如下面代码，添加了 `device='127.0.0.1:7500'` ，保存文件退出
-      
-      ``` python
-      def __init__(self, assets_path_prefix):
-        super().__init__(assets_path_prefix)
-        self.adb = auto_adb(device='127.0.0.1:7500')
-      ```
+   2. 新开一个终端/命令行，输入 `adb connect 127.0.0.1:7555`
 
-   3. 如果使用的设备存放的素材路径不一致，打开文件 start@android.py 在最底部的`main()`函数中编辑对应的素材位置前缀，保存文件退出
-      
+      > 7555是网易mumu模拟器的ADB监听端口，其它模拟器的adb端口建议自行百度/谷歌
+
+   3. 输入 `adb devices` 列出当前所有设备，如果有多个，需要打开文件 start@android.py ，找到 `main()` 方法，在创建设备对象时传入对应的设备地址与端口号，如下，保存文件退出
+
       ``` python
       if __name__ == '__main__':
-        AndroidEventLoop('此处更换为实际的素材的目录前缀').start()
+          ...
+      		# 3. init device
+          device = AndroidDevice(runtime=rt, address='http://127.0.0.1:7555')
+          ...
       ```
 
-   4. 新开一个终端，切换到对应游戏目录下，输入 `python3 start@android.py`
+   4. 如果使用的设备存放的素材路径不一致，打开文件 start@android.py 在最底部的 `main()` 方法中编辑对应的素材位置前缀，保存文件退出
+
+      ``` python
+      if __name__ == '__main__':
+          ...
+          # 2. init scenes
+          prefix = rt.game + '/assets/640x1136/feature/'
+          ...
+      ```
+
+   5. 新开一个终端，切换到项目目录下，输入 `python3 start@android.py`
 
 
 #### 参考资料
