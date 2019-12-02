@@ -10,7 +10,7 @@ def main():
     screen = np.asarray(device.screen_capture_as_image())  # 加载图片
     screen_gray = cv2.cvtColor(screen, cv2.COLOR_RGB2GRAY)  # 灰度转换
 
-    feature_path = './temp/confirm.png'
+    feature_path = './arknights/assets/640x1136/feature/annihilation_detection.png'
     feature = cv2.imread(feature_path, 0)
     feature_w, feature_h = feature.shape[::-1]
     print('feature size:', feature_w, 'x', feature_h)
