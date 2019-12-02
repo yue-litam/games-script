@@ -23,6 +23,10 @@ def annihilation_detection(prefix=''):
     return scene
 
 
+def annihilation_finish_detection(prefix=''):
+    return Scene('annihilation_finish_detection.png', prefix)
+
+
 def prts_running_scene(prefix=''):
     def after_action():
         print('.', sep='', end='')
@@ -94,6 +98,7 @@ def load_scenes(prefix, runtime):
         prts_disable_detection(prefix),  # 战斗关卡确认出击
         account_upgrade_detection(prefix),  # 战斗结束后账号等级提升
         annihilation_detection(prefix),  # 剿灭确认出击
+        annihilation_finish_detection(prefix),  # 剿灭完成
         level_info_detection(prefix),  # 战斗关卡确认出击
         level_team_detection(runtime, prefix),  # 战斗前队伍预览
         level_finish_detection(runtime, prefix),  # 战斗结束后账号等级提升
