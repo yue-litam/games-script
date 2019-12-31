@@ -2,7 +2,7 @@
 
 这个仓库整合了之前写的**碧蓝航线**复读机脚本和**明日方舟**复读机脚本，同时提供了ios平台和android平台的python执行脚本，对其中代码做了一番整理，抽出公共的代码到common文件夹中。
 
-使用复读机脚本需要一些额外的支持，例如ios的脚本需要装有macos的电脑 + xcode-tools + libimobiledevice(部分国行设备可能需要)[^3]；android则需要提前安装adb sdk的相关命令行工具，总得来说初次配置可能比较麻烦；
+使用复读机脚本需要一些额外的支持，例如ios的脚本需要装有macos的电脑 + xcode-tools + libimobiledevice(部分国行设备可能需要)；android则需要提前安装adb sdk的相关命令行工具，总得来说初次配置可能比较麻烦；
 
 使用复读机脚本，可能还需要自行更新一下素材，不同设备的分辨率、屏幕比例不一致可能导致 OpenCV 在比对图片时失败。笔主使用的手机还是老古董 iphone SE ，也会使用安卓模拟器。如果出现脚本不能正常运作，可**先尝试替换项目中assets的素材**（文件名注意要一致，或者自己改进代码也可以的）。
 
@@ -117,7 +117,7 @@ U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.
           ...
           # 3. init device
           dpi = 2  # iphone SE 的屏幕DPI为2，使用wda发送触摸指令时坐标(x,y)需要除以相应的dpi
-          device = IOSDevice(dpi, runtime=rt, address='http://127.0.0.1:8100')
+          device = IOSDevice(dpi, log_level=cfg.log_level, address='http://127.0.0.1:8100')
           ...
       ```
 
@@ -154,7 +154,7 @@ U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.
       if __name__ == '__main__':
           ...
       		# 3. init device
-          device = AndroidDevice(runtime=rt, address='http://127.0.0.1:7555')
+          device = AndroidDevice(log_level=cfg.log_level, address='http://127.0.0.1:7555')
           ...
       ```
 
@@ -173,6 +173,7 @@ U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.
 
 #### 参考资料
 
-- [^1] [adb命令参考](https://www.wanandroid.com/blog/show/2309)
-- [^2] [macOS 远程连接windows的Android模拟器](https://nicoster.github.io/%E8%BF%9C%E7%A8%8B%E8%BF%90%E8%A1%8C-android-%E6%A8%A1%E6%8B%9F%E5%99%A8/)
-- [^3] [macOS 平台上通过 Xcode 使用 wda 以及 libimobiledevice 安装说明](https://github.com/wangshub/wechat_jump_game/wiki/Android-和-iOS-操作步骤#二ios-手机操作步骤)
+- [ADB命令参考1](https://www.wanandroid.com/blog/show/2309)
+- [ADB命令参考2](http://wl9739.github.io/2017/05/22/ADB-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/)
+- [macOS 远程连接windows的Android模拟器](https://nicoster.github.io/%E8%BF%9C%E7%A8%8B%E8%BF%90%E8%A1%8C-android-%E6%A8%A1%E6%8B%9F%E5%99%A8/)
+- [macOS 平台上通过 Xcode 使用 wda 以及 libimobiledevice 安装说明](https://github.com/wangshub/wechat_jump_game/wiki/Android-和-iOS-操作步骤#二ios-手机操作步骤)

@@ -28,18 +28,20 @@ class AndroidDevice(Device):
     SCREENSHOT_WAY = 3
     adb = None
 
-    def __init__(self, runtime=None, address=''):
-        super().__init__(runtime)
+    def __init__(self, log_level=None, address=''):
+        super().__init__(log_level)
 
         self.adb = auto_adb(device=address)
         self.adb.test_device()
         self.__check_screenshot()
-        x, y = self.adb.get_size()
-        print("ScreenWidth: {0}, ScreenHeight: {1}".format(x, y))
+        self.screen_x, self.screen_y = self.adb.get_size()
 
     def tap_handler(self, pos_x, pos_y):
         super().debug('actually tap position: {0}, {1}'.format(pos_x, pos_y))
         self.adb.run('shell input tap {} {}'.format(pos_x, pos_y))
+
+    def swipe_handler(self, from_x, from_y, to_x, to_y, millisecond):
+        self.adb.run('shell input swipe {} {} {} {} {}'.format(from_x, from_y, to_x, to_y, millisecond))
 
     def screen_capture_handler(self, file_name=''):
         screen = self.__pull_screenshot(file_name)

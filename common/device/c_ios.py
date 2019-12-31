@@ -13,8 +13,8 @@ class IOSDevice(Device):
     session = None
     dpi = 1
 
-    def __init__(self, dpi=1, runtime=None, address='http://127.0.0.1:8100'):
-        super().__init__(runtime)
+    def __init__(self, dpi=1, log_level=None, address='http://127.0.0.1:8100'):
+        super().__init__(log_level)
 
         self.client = wda.Client(address)
         self.session = self.client.session()
@@ -38,3 +38,6 @@ class IOSDevice(Device):
         y = pos_y / self.dpi
         super().debug('actually tap position: {0}, {1}'.format(x, y))
         self.session.tap(x, y)
+
+    def swipe_handler(self, from_x, from_y, to_x, to_y, millisecond):
+        raise NotImplementedError("Should have implemented this: 单击并按住拖动屏幕指令方法")

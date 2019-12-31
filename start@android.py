@@ -4,32 +4,39 @@ import sys
 
 from common.device.c_android import AndroidDevice
 from common.eventloop import EventLoop
-from runtime import Runtime
+from runtime import Config, Variables
 from arknights.load_scenes import load_scenes as arknights_scenes
 from azurelane.load_scenes import load_scenes as azurelane_scenes
+
+
+def load_scenes(config, variables):
+    prefix = config.game_name + '/assets/640x1136/feature/'
+    if config.game_name == 'arknights':
+        return arknights_scenes(prefix, config, variables)
+    elif config.game_name == 'azurelane':
+        return azurelane_scenes(prefix, config, variables)
+    else:
+        print('请指定游戏名称')
+        exit(0)
+
 
 if sys.version_info.major != 3:
     print('请使用python3.x版本')
     exit(1)
 
 if __name__ == '__main__':
-    # 1. init runtime config
-    rt = Runtime()
+    # 1. init config
+    cfg = Config()
+    var = Variables()
 
     # 2. init scenes
-    prefix = rt.game + '/assets/640x1136/feature/'
-    scenes = None
-    if rt.game == 'arknights':
-        scenes = arknights_scenes(prefix, runtime=rt)
-    elif rt.game == 'azurelane':
-        scenes = azurelane_scenes(prefix, runtime=rt)
-    else:
-        print('请指定游戏名称')
-        exit(0)
+    scenes = load_scenes(cfg, var)
 
     # 3. init device
-    device = AndroidDevice(runtime=rt, address='127.0.0.1:7555')
+    device = AndroidDevice(log_level=cfg.log_level, address='127.0.0.1:7555')
+    var.device_screen_width = device.screen_x
+    var.device_screen_height = device.screen_y
 
     # 4. init event loop and start.
-    worker = EventLoop(scenes, device)
-    worker.start()
+    worker = EventLoop(scenes, device, variables=var, log_level=cfg.log_level)
+    worker.start(5)
