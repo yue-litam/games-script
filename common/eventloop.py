@@ -67,32 +67,8 @@ class EventLoop:
             self.device.tap_handler(x, y)
 
         # 需要手势滑动
-        if ss.action_swipe:
-            width, height = self.vars.device_screen_width, self.vars.device_screen_height
-            center_x, center_y = width / 2, height / 2  # 屏幕中心坐标
-            horizontal_unit_distance = width / 3  # 水平方向每次移动距离
-            vertical_unit_distance = height / 3  # 垂直方向每次移动距离
-            if self.vars.swipe_mode == 0:
-                # 手势从上往下，查看上侧区域
-                # 不能从0开始滑动，会触发通知中心下拉事件
-                self.__debug('swipe and check top area')
-                self.__swipe_from_center(center_x, center_y + vertical_unit_distance)
-                self.vars.swipe_mode = 1  # 下次向右滑动
-            elif self.vars.swipe_mode == 1:
-                # 手势从右往左，查看右侧区域
-                self.__debug('swipe and check right area')
-                self.__swipe_from_center(center_x - horizontal_unit_distance, center_y)
-                self.vars.swipe_mode = 2  # 下次向下滑动
-            elif self.vars.swipe_mode == 2:
-                # 手势从下往上，查看下侧区域
-                self.__debug('swipe and check bottom area')
-                self.__swipe_from_center(center_x, center_y - vertical_unit_distance * 2)
-                self.vars.swipe_mode = 3  # 下次向左滑动
-            else:
-                # 手势从左往右，查看左侧区域
-                self.__debug('swipe and check left area')
-                self.__swipe_from_center(center_x + horizontal_unit_distance * 2, center_y)
-                self.vars.swipe_mode = 0  # 下次向上滑动
+        if ss.action_swipe and ss.swipe_handler is not None:
+            ss.swipe_handler(self.device)
 
         # 后置处理
         if ss.after_action is not None:
@@ -106,8 +82,3 @@ class EventLoop:
     def __debug(self, message):
         if self.log_level is not None and self.log_level == 'debug':
             print(message)
-
-    def __swipe_from_center(self, to_x, to_y):
-        width, height = self.vars.device_screen_width, self.vars.device_screen_height
-        center_x, center_y = width / 2, height / 2  # 屏幕中心坐标
-        self.device.swipe_handler(center_x, center_y, to_x, to_y, 500)

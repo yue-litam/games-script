@@ -14,7 +14,7 @@ def main():
     # feature_path = './azurelane/assets/640x1136/feature/team_choose.png'
     # feature_path = './azurelane/assets/640x1136/feature/target_not_found.png'
     # feature_path = './azurelane/assets/640x1136/feature/difficult_medium.png'
-    feature_path = './azurelane/assets/640x1136/feature/info_box_detection.png'
+    feature_path = './azurelane/assets/640x1136/feature/shipyard_full.png'
     feature = cv2.imread(feature_path, 0)
     feature_w, feature_h = feature.shape[::-1]
     print('feature size:', feature_w, 'x', feature_h)

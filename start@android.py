@@ -10,10 +10,11 @@ from azurelane.load_scenes import load_scenes as azurelane_scenes
 
 
 def load_scenes(config, variables):
-    prefix = config.game_name + '/assets/640x1136/feature/'
     if config.game_name == 'arknights':
+        prefix = config.game_name + '/assets/640x1136/feature/'
         return arknights_scenes(prefix, config, variables)
     elif config.game_name == 'azurelane':
+        prefix = config.game_name + '/assets/640x1136/feature/'
         return azurelane_scenes(prefix, config, variables)
     else:
         print('请指定游戏名称')
@@ -39,4 +40,4 @@ if __name__ == '__main__':
 
     # 4. init event loop and start.
     worker = EventLoop(scenes, device, variables=var, log_level=cfg.log_level)
-    worker.start(5)
+    worker.start(3)

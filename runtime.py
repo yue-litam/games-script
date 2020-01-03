@@ -38,9 +38,9 @@ class Config:
                 print('  - 自动使用石头:{0}'.format(self.use_stone_max))
             elif self.game_name == 'azurelane':
                 if args_count > 2:
-                    self.game_name = args[2]
+                    self.battle_no = args[2]
                 else:
-                    self.battle_no = cfg.get('azurelane', 'battle_no')
+                    self.battle_no = cfg.get(self.game_name, 'battle_no')
                 print('当前复读游戏：碧蓝航线')
                 print(' - 关卡: {}'.format(self.battle_no))
             print('')
@@ -60,6 +60,7 @@ class Variables:
     # ---- azurelane ----
     search_enemy = False  # 进入索敌界面
     swipe_mode = 0  # 索敌为空时，移动地图方向，0=向上滑动，1=向右滑动，2=向下滑动，3=向左滑动
+    round_count = 0
 
     # ---- arknights ----
     pharmacy_used = 0  # 已使用的药剂数量，初识为0

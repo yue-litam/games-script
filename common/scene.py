@@ -13,6 +13,7 @@ class Scene:
     action_image = ''  # 该场景点击位置的特征照片
     after_action = None  # 后置处理函数
     action_swipe = False  # 该场景是否需要手势滑动
+    action_handler = None  # 该场景手势滑动的处理器
     action_image_w = 0
     action_image_h = 0
     threshold = 0.8  # 匹配度，默认80%，可根据不同的素材调整
@@ -21,7 +22,7 @@ class Scene:
                  image, prefix='', name=None,
                  before_action=None,
                  action_tap=True, action_image=None, action_tap_offset_x=0, action_tap_offset_y=0,
-                 action_swipe=False,
+                 action_swipe=False, swipe_handler=None,
                  after_action=None,
                  threshold=0.8
                  ):
@@ -39,6 +40,7 @@ class Scene:
         self.before_action = before_action
         self.after_action = after_action
         self.action_swipe = action_swipe
+        self.swipe_handler = swipe_handler
         self.action_tap_offset_x = action_tap_offset_x
         self.action_tap_offset_y = action_tap_offset_y
         self.threshold = threshold

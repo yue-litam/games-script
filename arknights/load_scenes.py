@@ -37,16 +37,11 @@ def prts_running_scene(prefix=''):
 
 def level_team_detection(config, variables, prefix=''):
     def before_action():
-        if 0 < variables.repeated_count <= config.repeat_count_max:
+        if 0 <= config.repeat_count_max <= variables.repeated_count:
             print('\n\n预设的复读次数已完成')
             exit(0)
         variables.repeated_count += 1
-        if variables.flag_start_printed:
-            pass
-        else:
-            print('\n第 %03d 次副本' % variables.repeated_count, sep='', end='')
-            variables.flag_start_printed = True
-
+        print('\n第 %03d 次副本' % variables.repeated_count, sep='', end='')
     return Scene('level_team_detection.png', prefix, before_action=before_action)
 
 
