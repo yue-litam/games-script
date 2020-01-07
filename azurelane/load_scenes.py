@@ -10,7 +10,6 @@ def battle_fighting(prefix):
               identify_image=load_resource("stop_auto_battle_detection.png", prefix),
               action_type='none',  # 不需要点击
               )
-    s.after_action = lambda _1, _2: print('.', sep='', end='')
     return s
 
 
@@ -67,16 +66,19 @@ def battle_finished_super_rare_character_confirm(prefix):
 
 
 def battle_finished_lock_new_character(prefix):
-    return Scene('检测锁定新角色提示',
-                 identify_image=load_resource("lock_ship_detection.png", prefix),
-                 tap_image=load_resource("ship_lock_yes_button.png", prefix),
-                 tap_offset_y=-100)
+    s = Scene('检测锁定新角色提示',
+              identify_image=load_resource("lock_ship_detection.png", prefix),
+              tap_image=load_resource("ship_lock_yes_button.png", prefix),
+              tap_offset_y=-100)
+    s.after_action = lambda _1, _2: logger.info("  new character locked!")
+    return s
 
 
 def battle_finished_team_exp(prefix):
     s = Scene("检测战斗完成经验结算界面",
               identify_image=load_resource("battle_post_confirm_detection.png", prefix),
               tap_image=load_resource("battle_post_confirm_button.png", prefix))
+    s.after_action = lambda _1, _2: time.sleep(5)
     return s
 
 

@@ -85,7 +85,7 @@ class EnemySearch(Scene):
         if self.type == 'tap':
             # 点击后，预留10s的时间，等待舰队移动到目标点，
             # 避免到达目标点前截图，载入队伍阵型界面时触发了手势滑动操作，改变阵型
-            time.sleep(10)
+            time.sleep(5)
 
     def how_to_swipe(self):
         return calculate_move_map(self.variables)
