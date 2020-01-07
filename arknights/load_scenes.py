@@ -29,12 +29,8 @@ def annihilation_finish_detection(prefix):
 
 
 def prts_running_scene(prefix):
-    def after_action(_1, _2):
-        print('.', sep='', end='')
-
     s = Scene('检测自律战斗进行中', action_type='none',
               identify_image=load_resource('level_fighting_detection.png', prefix))
-    s.after_action = after_action
     return s
 
 
@@ -44,7 +40,7 @@ def level_team_detection(config, variables, prefix):
             logger.info('\n\n预设的复读次数已完成')
             exit(0)
         variables.repeated_count += 1
-        logger.info('\n第 %03d 次副本' % variables.repeated_count)
+        logger.info('第 %03d 次副本' % variables.repeated_count)
 
     s = Scene('检测指定关卡自律队伍阵容页面',
               identify_image=load_resource('level_team_detection.png', prefix))
@@ -66,7 +62,7 @@ def exchange_intellect_by_pharmacy(config, variables, prefix):
     def before_action(_1, _2):
         if config.use_pharmacy_max > 0:
             if variables.pharmacy_used >= config.use_pharmacy_max:
-                logger.info('\n\n已到达预设的可用理智上限, 脚本将退出')
+                logger.info('已到达预设的可用药剂上限, 脚本将退出')
                 exit(0)
             else:
                 variables.pharmacy_used += 1
@@ -85,7 +81,7 @@ def exchange_intellect_by_stone(config, variables, prefix):
     def before_action(_1, _2):
         if config.use_stone_max > 0:
             if variables.stone_used >= config.use_stone_max:
-                logger.info('\n\n已到达预设的可用理智上限, 脚本将退出')
+                logger.info('已到达预设的可用源石上限, 脚本将退出')
                 exit(0)
             else:
                 variables.stone_used += 1

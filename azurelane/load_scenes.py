@@ -28,7 +28,8 @@ def battle_team_choose(config, variables, prefix):
         variables.repeated_count += 1
         variables.round_count = 0
         variables.swipe_mode = 0
-        logger.info('\n第 %03d 次副本' % variables.repeated_count)
+        print('')
+        logger.info('第 %03d 次副本' % variables.repeated_count)
 
     s = Scene("检测指定关卡出击队伍选择",
               identify_image=load_resource("team_choose.png", prefix),
