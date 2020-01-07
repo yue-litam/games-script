@@ -1,11 +1,12 @@
 import numpy as np
 import cv2
 import wda
+from logutil import logger
 
 
 def main():
     image_path = './temp/screen.png'
-    feature_path = './arknights/assets/640x1136/feature/level_info_detection.png'
+    feature_path = './arknights/assets/scenes_feature/level_info_detection.png'
 
     c = wda.Client()
     _ = c.screenshot(image_path)
@@ -15,7 +16,7 @@ def main():
 
     feature = cv2.imread(feature_path, 0)
     feature_w, feature_h = feature.shape[::-1]
-    print('feature size:', feature_w, 'x', feature_h)
+    logger.info('feature size:', feature_w, 'x', feature_h)
 
     res = cv2.matchTemplate(screen_gray, feature, cv2.TM_CCOEFF_NORMED)
 

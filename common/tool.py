@@ -5,7 +5,6 @@ import numpy as np
 
 
 def get_similarity(template, screen, threshold=0.8):
-    # _, _ = template.shape[::-1]
     res = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
     loc = np.where(res >= threshold)
     found = 0
@@ -26,3 +25,7 @@ def device_detect_feature_location_handler(feature, screen):
 def find_click_position(template, screen, x_offset=0, y_offset=0):
     touch_loc, _, w, h = device_detect_feature_location_handler(template, screen)
     return (touch_loc[0] + w / 2 + x_offset), (touch_loc[1] + h / 2 + y_offset)
+
+
+def load_resource(resource, prefix=""):
+    return cv2.imread(prefix + resource, 0)

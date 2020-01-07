@@ -1,60 +1,63 @@
 # coding: utf-8
-
-import cv2
+from common import tool
+from logutil import logger
 
 
 class Scene:
-    name = ''  # 场景名称
-    image = ''  # 场景特征照片
-    before_action = None  # 前置处理函数
-    action_tap = True  # 该场景是否需要点击屏幕
-    action_tap_offset_x = 0  # 该场景点击屏幕时在X轴方向偏移
-    action_tap_offset_y = 0  # 该场景点击屏幕时在Y轴方向偏移
-    action_image = ''  # 该场景点击位置的特征照片
-    after_action = None  # 后置处理函数
-    action_swipe = False  # 该场景是否需要手势滑动
-    action_handler = None  # 该场景手势滑动的处理器
-    action_image_w = 0
-    action_image_h = 0
-    threshold = 0.8  # 匹配度，默认80%，可根据不同的素材调整
+    name = ''              # 场景名称
+    identify_image = None  #
+    type = 'tap'
+    tap_offset_x = 0       # 该场景点击屏幕时在X轴方向偏移
+    tap_offset_y = 0       # 该场景点击屏幕时在Y轴方向偏移
+    tap_image = None       # 该场景点击位置的特征照片
+    threshold = 0.8        # 匹配度，默认80%，可根据不同的素材调整
 
-    def __init__(self,
-                 image, prefix='', name=None,
-                 before_action=None,
-                 action_tap=True, action_image=None, action_tap_offset_x=0, action_tap_offset_y=0,
-                 action_swipe=False, swipe_handler=None,
-                 after_action=None,
+    tap_x = -1
+    tap_y = -1
+
+    def __init__(self, name, identify_image, action_type="tap",
+                 tap_image=None, tap_offset_x=0, tap_offset_y=0,
                  threshold=0.8
                  ):
-
-        self.image = image
-        if name is None:
-            self.name = image
-        else:
-            self.name = name
-        if action_image is None:
-            self.action_image = image
-        else:
-            self.action_image = action_image
-        self.action_tap = action_tap
-        self.before_action = before_action
-        self.after_action = after_action
-        self.action_swipe = action_swipe
-        self.swipe_handler = swipe_handler
-        self.action_tap_offset_x = action_tap_offset_x
-        self.action_tap_offset_y = action_tap_offset_y
+        self.name = name
+        self.identify_image = identify_image
+        self.type = action_type
+        self.tap_image = tap_image
+        self.tap_offset_x = tap_offset_x
+        self.tap_offset_y = tap_offset_y
         self.threshold = threshold
+        logger.info("scene register: <{0}>".format(self.name))
+        self.__check()
 
-        # load resources
-        self.imageTemplate = cv2.imread(prefix + self.image, 0)
-        if self.imageTemplate is None:
-            print("Error : Image {0} not exists".format(self.image))
-            exit(4)
+    def matched_in(self, screen):
+        return tool.get_similarity(self.identify_image, screen, self.threshold) == 1
 
-        self.actionTemplate = cv2.imread(prefix + self.action_image, 0)
-        if self.actionTemplate is None:
-            print("Error : ActionImage {0} not exists".format(self.action_image))
-            exit(4)
-        self.action_image_w, self.action_image_h = self.actionTemplate.shape[::-1]
+    def how_to_swipe(self):
+        raise NotImplemented('Scene Unknown how to swipe.')
 
-        print("scene register: <{0}> action: <{1}>".format(self.name, self.action_image))
+    def where_to_tap(self, screen):
+        if self.tap_x != -1:
+            x, y = self.tap_x, self.tap_y
+            self.tap_x = -1
+            self.tap_y = -1
+        else:
+            x, y = tool.find_click_position(self.tap_image, screen)
+            x += self.tap_offset_x
+            y += self.tap_offset_y
+        return x, y
+
+    def perform_what(self):
+        return self.type
+
+    def __check(self):
+        if self.identify_image is None:
+            logger.error("Error : {0} Identify Image not exists".format(self.name))
+            exit(0)
+        if self.tap_image is None:
+            self.tap_image = self.identify_image
+
+    def before_action(self, device, screen):
+        pass
+
+    def after_action(self, device, screen):
+        pass

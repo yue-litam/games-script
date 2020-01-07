@@ -1,89 +1,103 @@
-# import sys
-# sys.path.insert(1, '../common')
+from logutil import logger
 from common.scene import Scene
+from common.tool import load_resource
 
 
-def account_upgrade_detection(prefix=''):
-    return Scene('account_upgrade_detection.png', prefix)
+def account_upgrade_detection(prefix):
+    return Scene('检测账号升级',
+                 identify_image=load_resource('account_upgrade_detection.png', prefix))
 
 
-def prts_disable_detection(prefix=''):
-    return Scene('prts_disable_detection.png', prefix)
+def prts_disable_detection(prefix):
+    return Scene('检测自律未打开', identify_image=load_resource('prts_disable_detection.png', prefix))
 
 
-def level_info_detection(prefix=''):
-    scene = Scene('level_info_detection.png', prefix)
-    scene.action_tap_offset_x = scene.action_image_w
-    return scene
+def level_info_detection(prefix):
+    image = load_resource('level_info_detection.png', prefix)
+    width, _ = image.shape[::-1]
+    return Scene('检测指定关卡信息介绍页面', identify_image=image, tap_offset_x=width)
 
 
-def annihilation_detection(prefix=''):
-    scene = Scene('annihilation_detection.png', prefix)
-    scene.action_tap_offset_x = scene.action_image_w
-    return scene
+def annihilation_detection(prefix):
+    image = load_resource('annihilation_detection.png', prefix)
+    width, _ = image.shape[::-1]
+    return Scene('检测剿灭模式关卡信息介绍页面', identify_image=load_resource('annihilation_detection.png', prefix))
 
 
-def annihilation_finish_detection(prefix=''):
-    return Scene('annihilation_finish_detection.png', prefix)
+def annihilation_finish_detection(prefix):
+    return Scene('检测剿灭模式自律完成页面', identify_image=load_resource('annihilation_finish_detection.png', prefix))
 
 
-def prts_running_scene(prefix=''):
-    def after_action():
+def prts_running_scene(prefix):
+    def after_action(_1, _2):
         print('.', sep='', end='')
 
-    return Scene('level_fighting_detection.png', prefix,
-                 action_tap=False, after_action=after_action)
+    s = Scene('检测自律战斗进行中', action_type='none',
+              identify_image=load_resource('level_fighting_detection.png', prefix))
+    s.after_action = after_action
+    return s
 
 
-def level_team_detection(config, variables, prefix=''):
-    def before_action():
+def level_team_detection(config, variables, prefix):
+    def before_action(_1, _2):
         if 0 <= config.repeat_count_max <= variables.repeated_count:
-            print('\n\n预设的复读次数已完成')
+            logger.info('\n\n预设的复读次数已完成')
             exit(0)
         variables.repeated_count += 1
-        print('\n第 %03d 次副本' % variables.repeated_count, sep='', end='')
-    return Scene('level_team_detection.png', prefix, before_action=before_action)
+        logger.info('\n第 %03d 次副本' % variables.repeated_count)
+
+    s = Scene('检测指定关卡自律队伍阵容页面',
+              identify_image=load_resource('level_team_detection.png', prefix))
+    s.before_action = before_action
+    return s
 
 
-def level_finish_detection(variables, prefix=''):
-    def after_action():
+def level_finish_detection(variables, prefix):
+    def after_action(_1, _2):
         variables.flag_start_printed = False
 
-    return Scene('level_finish_detection.png', prefix, after_action=after_action)
+    s = Scene('检测指定关卡自律完成页面',
+              identify_image=load_resource('level_finish_detection.png', prefix))
+    s.after_action = after_action
+    return s
 
 
-def exchange_intellect_by_pharmacy(config, variables, prefix=''):
-    def before_action():
+def exchange_intellect_by_pharmacy(config, variables, prefix):
+    def before_action(_1, _2):
         if config.use_pharmacy_max > 0:
             if variables.pharmacy_used >= config.use_pharmacy_max:
-                print('\n\n已到达预设的可用理智上限, 脚本将退出')
+                logger.info('\n\n已到达预设的可用理智上限, 脚本将退出')
                 exit(0)
             else:
                 variables.pharmacy_used += 1
         else:
-            print('理智不足，自动退出脚本')
+            logger.info('理智不足，自动退出脚本')
             exit(0)
 
-    return Scene('exchange_intellect_by_pharmacy.png', prefix,
-                 before_action=before_action,
-                 action_image="exchange_intellect_confirm.png")
+    s = Scene('检测建议使用药剂补充理智页面',
+              identify_image=load_resource('exchange_intellect_by_pharmacy.png', prefix),
+              tap_image=load_resource("exchange_intellect_confirm.png", prefix))
+    s.before_action = before_action
+    return s
 
 
-def exchange_intellect_by_stone(config, variables, prefix=''):
-    def before_action():
+def exchange_intellect_by_stone(config, variables, prefix):
+    def before_action(_1, _2):
         if config.use_stone_max > 0:
             if variables.stone_used >= config.use_stone_max:
-                print('\n\n已到达预设的可用理智上限, 脚本将退出')
+                logger.info('\n\n已到达预设的可用理智上限, 脚本将退出')
                 exit(0)
             else:
                 variables.stone_used += 1
         else:
-            print('理智不足，自动退出脚本')
+            logger.info('理智不足，自动退出脚本')
             exit(0)
 
-    return Scene('exchange_intellect_by_stone.png', prefix,
-                 before_action=before_action,
-                 action_image="exchange_intellect_confirm.png")
+    s = Scene('检测建议使用石头补充理智页面',
+              identify_image=load_resource('exchange_intellect_by_stone.png', prefix),
+              tap_image=load_resource("exchange_intellect_confirm.png", prefix))
+    s.before_action = before_action
+    return s
 
 
 def load_scenes(prefix, config, variables):

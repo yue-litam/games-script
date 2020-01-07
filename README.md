@@ -36,12 +36,6 @@ U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.
 
   - `assets` - 素材&截图
 
-    - `640x1136` - 适用于 iphone SE 分辨率的素材
-
-    - `1125x2436` - 适用于 iphone 11 Pro 分辨率的素材 
-
-      > 空的，暂时买不起:-)
-
   - `loadscene.py` - 加载游戏中需要识别的场景特征文件
 
 - `azurelane` - 碧蓝航线复读所需的文件
@@ -54,7 +48,7 @@ U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.
   - `i_device.py` - 抽象的接口
     - `c_ios.py` - ios平台的接口实现
     - `c_android.py` - 安卓平台的接口实现
-  - `auto_adb.py` - 对安卓平台的adb调用的封装
+  - `adb.py` - 对安卓平台的adb调用的封装
   - `eventloop.py` - 复读机核心
   - `scene.py` - 对复读机可能遇到的场景的封装类
   - `tool.py` - 工具类，提供判断一张图片中是否包含另一张图片、所在位置的方法
@@ -117,7 +111,7 @@ U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.
           ...
           # 3. init device
           dpi = 2  # iphone SE 的屏幕DPI为2，使用wda发送触摸指令时坐标(x,y)需要除以相应的dpi
-          device = IOSDevice(dpi, log_level=cfg.log_level, address='http://127.0.0.1:8100')
+          device = IOSDevice(dpi, address='http://127.0.0.1:8100')
           ...
       ```
 
@@ -135,7 +129,7 @@ U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.
       if __name__ == '__main__':
           ...
           # 2. init scenes
-          prefix = rt.game + '/assets/640x1136/feature/'
+          prefix = rt.game + '/assets/scenes_feature/'
           ...
       ```
 
@@ -154,7 +148,7 @@ U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.
       if __name__ == '__main__':
           ...
       		# 3. init device
-          device = AndroidDevice(log_level=cfg.log_level, address='http://127.0.0.1:7555')
+          device = AndroidDevice(address='http://127.0.0.1:7555')
           ...
       ```
 
@@ -164,7 +158,7 @@ U大写的脚本请看 [这里 - AzureLaneGame_AutomationScript](https://github.
       if __name__ == '__main__':
           ...
           # 2. init scenes
-          prefix = rt.game + '/assets/640x1136/feature/'
+          prefix = rt.game + '/assets/scenes_feature/'
           ...
       ```
 

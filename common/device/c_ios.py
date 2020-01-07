@@ -2,6 +2,7 @@
 
 import wda
 import cv2
+from logutil import logger
 
 from common.device.i_device import Device
 
@@ -13,9 +14,7 @@ class IOSDevice(Device):
     session = None
     dpi = 1
 
-    def __init__(self, dpi=1, log_level=None, address='http://127.0.0.1:8100'):
-        super().__init__(log_level)
-
+    def __init__(self, dpi=1, address='http://127.0.0.1:8100'):
         self.client = wda.Client(address)
         self.session = self.client.session()
         self.dpi = dpi
@@ -24,7 +23,7 @@ class IOSDevice(Device):
         _ = self.client.screenshot(screen_path)
         screen = cv2.imread(screen_path, 0)
         width, height = screen.shape[::-1]
-        print("\nScreenWidth: {0}, ScreenHeight: {1}\n".format(width, height))
+        logger.info("\nScreenWidth: {0}, ScreenHeight: {1}\n".format(width, height))
 
     def screen_capture_handler(self, file_name=''):
         if file_name == '':
@@ -36,7 +35,7 @@ class IOSDevice(Device):
     def tap_handler(self, pos_x, pos_y):
         x = pos_x / self.dpi
         y = pos_y / self.dpi
-        super().debug('actually tap position: {0}, {1}'.format(x, y))
+        logger.debug('actually tap position: {0}, {1}'.format(x, y))
         self.session.tap(x, y)
 
     def swipe_handler(self, from_x, from_y, to_x, to_y, millisecond):

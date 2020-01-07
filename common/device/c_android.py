@@ -8,15 +8,16 @@ import subprocess
 
 from io import StringIO
 from PIL import ImageFile, Image
+from logutil import logger
 
 sys.path.insert(1, '../common')
 
 try:
     from common.device.i_device import Device
-    from common.auto_adb import auto_adb
+    from common.adb import Adb
 except Exception as ex:
-    print(ex)
-    print('请检查项目根目录中的 common 文件夹是否存在')
+    logger.error(ex)
+    logger.error('请检查项目根目录中的 common 文件夹是否存在')
     exit(1)
 
 screen_name = 'screen.png'
@@ -28,16 +29,14 @@ class AndroidDevice(Device):
     SCREENSHOT_WAY = 3
     adb = None
 
-    def __init__(self, log_level=None, address=''):
-        super().__init__(log_level)
-
-        self.adb = auto_adb(device=address)
+    def __init__(self, address=''):
+        self.adb = Adb(device=address)
         self.adb.test_device()
         self.__check_screenshot()
         self.screen_x, self.screen_y = self.adb.get_size()
 
     def tap_handler(self, pos_x, pos_y):
-        super().debug('actually tap position: {0}, {1}'.format(pos_x, pos_y))
+        logger.debug('actually tap position: {0}, {1}'.format(pos_x, pos_y))
         self.adb.run('shell input tap {} {}'.format(pos_x, pos_y))
 
     def swipe_handler(self, from_x, from_y, to_x, to_y, millisecond):
@@ -59,16 +58,16 @@ class AndroidDevice(Device):
                 except Exception:
                     pass
             if self.SCREENSHOT_WAY < 0:
-                print('暂不支持当前设备')
+                logger.error('暂不支持当前设备')
                 sys.exit()
             try:
                 im = self.__pull_screenshot()
                 im.load()
                 im.close()
-                print('采用方式 {} 获取截图'.format(self.SCREENSHOT_WAY))
+                logger.info('采用方式 {} 获取截图'.format(self.SCREENSHOT_WAY))
                 break
             except Exception as pssEx:
-                print(pssEx)
+                logger.error(pssEx)
                 self.SCREENSHOT_WAY -= 1
 
     def __pull_screenshot(self, file_name=''):

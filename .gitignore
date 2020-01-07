@@ -5,6 +5,7 @@ azurelane/temp
 temp/*.png
 origin
 config.ini
+logs/
 
 ### python ### 
 __pycache__/

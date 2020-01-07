@@ -2,9 +2,10 @@
 import os
 import subprocess
 import platform
+from logutil import logger
 
 
-class auto_adb():
+class Adb:
     def __init__(self, adb_path='adb', device=''):
         try:
             # adb_path = 'adb'
@@ -30,7 +31,7 @@ class auto_adb():
                         [adb_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 except OSError:
                     pass
-            print('请安装 ADB 及驱动并配置环境变量')
+            logger.warn('请安装 ADB 及驱动并配置环境变量')
             exit(1)
 
     def get_screen(self, d=''):
@@ -52,21 +53,22 @@ class auto_adb():
         return output
 
     def test_device(self):
-        print('检查设备是否连接...')
+        logger.info('检查设备是否连接...')
         command_list = [self.adb_path, 'devices']
         process = subprocess.Popen(command_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output = process.communicate()
-        if output[0].decode('utf8') == 'List of devices attached\n\n':
-            print('未找到设备')
-            print('adb 输出:')
-            for each in output:
-                print(each.decode('utf8'))
+        device_list = output[0].decode('utf-8')\
+            .replace('\r', '')\
+            .strip('\n')\
+            .split("\n")
+        if len(device_list) == 1:  # first one is: 'List of devices attached'
+            logger.warn('未找到设备')
             exit(1)
-        print('设备已连接')
-        print('adb 输出:')
-        for each in output:
-            if each != '':
-                print(each.decode('utf8'))
+        logger.info('设备已连接')
+        logger.info('adb 输出:')
+        for i in range(1, len(device_list)):
+            if device_list[i] != '':
+                logger.info('\t' + device_list[i])
 
     def test_density(self, d=''):
         command = self.adb_command(d, 'shell wm density')

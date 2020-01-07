@@ -1,16 +1,12 @@
 # coding: utf-8
 
 import time
-import os
-
-# import sys
-# sys.path.insert(1, '../')
-
+from logutil import logger
 try:
     from common import tool
     from common.scene import Scene
 except Exception as importEx:
-    print(importEx)
+    logger.error(importEx)
     exit(1)
 
 
@@ -18,19 +14,11 @@ class EventLoop:
     scenes = None
     device = None
     vars = None
-    log_level = None
 
-    def __init__(self, scenes, device, variables=None, log_level=None):
+    def __init__(self, scenes, device, variables=None):
         self.scenes = scenes
-        self.log_level = log_level
         self.device = device
         self.vars = variables
-
-    def execute_tap_action(self, template, img, x_offset=0, y_offset=0):
-        touch_loc, _, w, h = tool.device_detect_feature_location_handler(template, img)
-        x, y = ((touch_loc[0] + w / 2 + x_offset), (touch_loc[1] + h / 2 + y_offset))
-        # print("Touching {0}, {1}".format(x, y))
-        self.device.tap_handler(x, y)
 
     def recognize_and_process_page(self):
         screen = self.device.screen_capture_handler()
@@ -38,47 +26,35 @@ class EventLoop:
             return
 
         # 场景匹配
-        ss = None
+        matched = None
         for scene in self.scenes:
-            if tool.get_similarity(scene.imageTemplate, screen, scene.threshold) == 1:
-                ss = scene
+            if scene.matched_in(screen):
+                matched = scene
+                logger.debug('match scene {}'.format(matched.name))
                 break
-        if ss is None:
-            self.__debug('当前屏幕无法识别出任何已知匹配的场景')
-            unknown_scene_path = './temp/unknown_scene.png'
-            if os.path.exists(unknown_scene_path):
-                os.remove(unknown_scene_path)
-            self.device.screen_capture_handler(unknown_scene_path)
+        if matched is None:
+            logger.debug('当前屏幕无法识别出任何已知匹配的场景')
             return
 
-        # 场景匹配成功后
-        self.__debug('match scene {}'.format(ss.name))
-
         # 前置处理
-        if ss.before_action is not None:
-            ss.before_action()
+        if matched.before_action is not None:
+            matched.before_action(self.device, screen)
 
-        # 需要点击
-        if ss.action_tap:
-            x0, y0 = tool.find_click_position(ss.actionTemplate, screen)
-            x = x0 + ss.action_tap_offset_x
-            y = y0 + ss.action_tap_offset_y
-            self.__debug('calculate tap position: {0}, {1}'.format(x, y))
+        if matched.perform_what() == 'tap':
+            # 需要点击
+            x, y = matched.where_to_tap(screen)
+            logger.debug('calculate tap position: {0}, {1}'.format(x, y))
             self.device.tap_handler(x, y)
-
-        # 需要手势滑动
-        if ss.action_swipe and ss.swipe_handler is not None:
-            ss.swipe_handler(self.device)
+        elif matched.perform_what() == 'swipe':
+            # 需要手势滑动
+            from_x, from_y, to_x, to_y = matched.how_to_swipe()
+            self.device.swipe_handler(from_x, from_y, to_x, to_y, 500)
 
         # 后置处理
-        if ss.after_action is not None:
-            ss.after_action()
+        if matched.after_action is not None:
+            matched.after_action(self.device, screen)
 
     def start(self, pause=1):
         while True:
             self.recognize_and_process_page()
             time.sleep(pause)
-
-    def __debug(self, message):
-        if self.log_level is not None and self.log_level == 'debug':
-            print(message)
