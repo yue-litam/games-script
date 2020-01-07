@@ -25,17 +25,24 @@ if sys.version_info.major != 3:
     exit(1)
 
 if __name__ == '__main__':
-    # 1. init config
-    cfg = Config()
-    var = Variables()
+    try:
+        # 1. init config
+        cfg = Config()
+        var = Variables()
 
-    # 2. init scenes
-    scenes = load_scenes(cfg, var)
+        # 2. init scenes
+        scenes = load_scenes(cfg, var)
 
-    # 3. init device
-    dpi = 2  # iphone SE 的屏幕DPI为2，使用wda发送触摸指令时坐标(x,y)需要除以相应的dpi
-    device = IOSDevice(dpi, address='http://127.0.0.1:8100')
+        # 3. init device
+        dpi = 2  # iphone SE 的屏幕DPI为2，使用wda发送触摸指令时坐标(x,y)需要除以相应的dpi
+        device = IOSDevice(dpi, address='http://127.0.0.1:8100')
 
-    # 4. init event loop and start.
-    worker = EventLoop(scenes, device, variables=var)
-    worker.start()
+        # 4. init event loop and start.
+        worker = EventLoop(scenes, device, variables=var)
+        worker.start()
+    except KeyboardInterrupt:
+        logger.info('Ctrl+C 被按下, 程序即将退出.')
+        exit()
+    except Exception:
+        logger.exception("Unexcepted/Unkonwn Exception occurred")
+        exit()

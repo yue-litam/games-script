@@ -65,7 +65,7 @@ class Variables:
 
     # ---- azurelane ----
     search_enemy = False  # 进入索敌界面
-    swipe_mode = 0  # 索敌为空时，移动地图方向，0=向上滑动，1=向右滑动，2=向下滑动，3=向左滑动
+    swipe_mode = 2  # 索敌为空时，移动地图方向，0=向上滑动，1=向右滑动，2=向下滑动，3=向左滑动
     round_count = 0
 
     # ---- arknights ----

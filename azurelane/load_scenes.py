@@ -92,7 +92,7 @@ def wife_unhappy(prefix):
 
 
 def shipyard_full(prefix):
-    def before_action():
+    def before_action(_1, _2):
         logger.info('船坞满了，指挥官清理一下喵')
         exit(0)
 

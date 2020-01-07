@@ -28,18 +28,25 @@ if sys.version_info.major != 3:
     exit(1)
 
 if __name__ == '__main__':
-    # 1. init config
-    cfg = Config()
-    var = Variables()
+    try:
+        # 1. init config
+        cfg = Config()
+        var = Variables()
 
-    # 2. init scenes
-    scenes = load_scenes(cfg, var)
+        # 2. init scenes
+        scenes = load_scenes(cfg, var)
 
-    # 3. init device
-    device = AndroidDevice(address='127.0.0.1:7555')
-    var.device_screen_width = device.screen_x
-    var.device_screen_height = device.screen_y
+        # 3. init device
+        device = AndroidDevice(address='127.0.0.1:7555')
+        var.device_screen_width = device.screen_x
+        var.device_screen_height = device.screen_y
 
-    # 4. init event loop and start.
-    worker = EventLoop(scenes, device, variables=var)
-    worker.start(3)
+        # 4. init event loop and start.
+        worker = EventLoop(scenes, device, variables=var)
+        worker.start(1)
+    except KeyboardInterrupt:
+        logger.info('Ctrl+C 被按下, 程序即将退出.')
+        exit()
+    except Exception:
+        logger.exception("Unexcepted/Unkonwn Exception occurred")
+        exit()
