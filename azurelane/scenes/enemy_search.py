@@ -45,7 +45,8 @@ def load_target_ship_features(prefix):
 
 
 class EnemySearch(Scene):
-    variables = None
+    context = None
+    config = None
     ship_features = []
     red_zones = [
         ((0, 0), (108, 640)),
@@ -58,10 +59,11 @@ class EnemySearch(Scene):
         ((580, 557), (1136, 640)),
     ]
 
-    def __init__(self, name, identify_image, variables):
+    def __init__(self, name, identify_image, context, config):
         super().__init__(name, identify_image)
         self.ship_features = load_target_ship_features('azurelane/assets/search_ship_feature/')
-        self.variables = variables
+        self.context = context
+        self.config = config
 
     def before_action(self, _, screen):
         matched = None
@@ -88,7 +90,7 @@ class EnemySearch(Scene):
             time.sleep(5)
 
     def how_to_swipe(self):
-        return calculate_move_map(self.variables)
+        return calculate_move_map(self.context, self.config)
 
     def __check_in_red_zone(self, tap_x, tap_y):
         for i in range(len(self.red_zones)):

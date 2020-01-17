@@ -1,6 +1,6 @@
 # coding: utf-8
 from common import tool
-from logutil import logger
+from common.logutil import logger
 
 
 class Scene:
@@ -26,7 +26,7 @@ class Scene:
         self.tap_offset_x = tap_offset_x
         self.tap_offset_y = tap_offset_y
         self.threshold = threshold
-        logger.info("scene register: <{0}>".format(self.name))
+        logger.debug("scene register: <{0}>".format(self.name))
         self.__check()
 
     def matched_in(self, screen):

@@ -1,4 +1,6 @@
-from logutil import logger
+import time
+
+from common.logutil import logger
 from common.scene import Scene
 from common.tool import load_resource
 
@@ -34,23 +36,24 @@ def prts_running_scene(prefix):
     return s
 
 
-def level_team_detection(config, variables, prefix):
+def level_team_detection(config, context, prefix):
     def before_action(_1, _2):
-        if 0 <= config.repeat_count_max <= variables.repeated_count:
+        if 0 <= config.repeat_count_max <= context.repeated_count:
             logger.info('\n\n预设的复读次数已完成')
             exit(0)
-        variables.repeated_count += 1
-        logger.info('第 %03d 次副本' % variables.repeated_count)
+        context.repeated_count += 1
+        logger.info('第 %03d 次副本' % context.repeated_count)
 
     s = Scene('检测指定关卡自律队伍阵容页面',
               identify_image=load_resource('level_team_detection.png', prefix))
     s.before_action = before_action
+    s.after_action = lambda _1, _2: time.sleep(2)
     return s
 
 
-def level_finish_detection(variables, prefix):
+def level_finish_detection(context, prefix):
     def after_action(_1, _2):
-        variables.flag_start_printed = False
+        context.flag_start_printed = False
 
     s = Scene('检测指定关卡自律完成页面',
               identify_image=load_resource('level_finish_detection.png', prefix))
@@ -58,14 +61,14 @@ def level_finish_detection(variables, prefix):
     return s
 
 
-def exchange_intellect_by_pharmacy(config, variables, prefix):
+def exchange_intellect_by_pharmacy(config, context, prefix):
     def before_action(_1, _2):
         if config.use_pharmacy_max > 0:
-            if variables.pharmacy_used >= config.use_pharmacy_max:
+            if context.pharmacy_used >= config.use_pharmacy_max:
                 logger.info('已到达预设的可用药剂上限, 脚本将退出')
                 exit(0)
             else:
-                variables.pharmacy_used += 1
+                context.pharmacy_used += 1
         else:
             logger.info('理智不足，自动退出脚本')
             exit(0)
@@ -77,14 +80,14 @@ def exchange_intellect_by_pharmacy(config, variables, prefix):
     return s
 
 
-def exchange_intellect_by_stone(config, variables, prefix):
+def exchange_intellect_by_stone(config, context, prefix):
     def before_action(_1, _2):
         if config.use_stone_max > 0:
-            if variables.stone_used >= config.use_stone_max:
+            if context.stone_used >= config.use_stone_max:
                 logger.info('已到达预设的可用源石上限, 脚本将退出')
                 exit(0)
             else:
-                variables.stone_used += 1
+                context.stone_used += 1
         else:
             logger.info('理智不足，自动退出脚本')
             exit(0)
@@ -96,16 +99,16 @@ def exchange_intellect_by_stone(config, variables, prefix):
     return s
 
 
-def load_scenes(prefix, config, variables):
+def load_scenes(prefix, config, context):
     return [
         prts_disable_detection(prefix),  # 战斗关卡确认出击
         account_upgrade_detection(prefix),  # 战斗结束后账号等级提升
         annihilation_detection(prefix),  # 剿灭确认出击
         annihilation_finish_detection(prefix),  # 剿灭完成
         level_info_detection(prefix),  # 战斗关卡确认出击
-        level_team_detection(config, variables, prefix),  # 战斗前队伍预览
-        level_finish_detection(variables, prefix),  # 战斗结束后账号等级提升
+        level_team_detection(config, context, prefix),  # 战斗前队伍预览
+        level_finish_detection(context, prefix),  # 战斗结束后账号等级提升
         prts_running_scene(prefix),  # 副本还在进行中
-        exchange_intellect_by_pharmacy(config, variables, prefix),  # 理智不足时有可使用的药剂
-        exchange_intellect_by_stone(config, variables, prefix),  # 理智不足时有可使用的石头
+        exchange_intellect_by_pharmacy(config, context, prefix),  # 理智不足时有可使用的药剂
+        exchange_intellect_by_stone(config, context, prefix),  # 理智不足时有可使用的石头
     ]

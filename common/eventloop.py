@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import time
-from logutil import logger
+from common.logutil import logger
 try:
     from common import tool
     from common.scene import Scene
@@ -15,10 +15,10 @@ class EventLoop:
     device = None
     vars = None
 
-    def __init__(self, scenes, device, variables=None):
+    def __init__(self, scenes, device, context=None):
         self.scenes = scenes
         self.device = device
-        self.vars = variables
+        self.vars = context
 
     def recognize_and_process_page(self):
         screen = self.device.screen_capture_handler()

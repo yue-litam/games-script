@@ -1,11 +1,7 @@
 ### project files ###
-test/
-arknights/temp
-azurelane/temp
-temp/*.png
-origin
-config.ini
+temp/
 logs/
+conf/config.ini
 
 ### python ### 
 __pycache__/

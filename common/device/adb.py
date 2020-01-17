@@ -2,7 +2,7 @@
 import os
 import subprocess
 import platform
-from logutil import logger
+from common.logutil import logger
 
 
 class Adb:
