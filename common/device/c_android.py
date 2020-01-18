@@ -8,13 +8,13 @@ import subprocess
 
 from io import StringIO
 from PIL import ImageFile, Image
-from logutil import logger
+from common.logutil import logger
 
 sys.path.insert(1, '../common')
 
 try:
     from common.device.i_device import Device
-    from common.adb import Adb
+    from common.device.adb import Adb
 except Exception as ex:
     logger.error(ex)
     logger.error('请检查项目根目录中的 common 文件夹是否存在')
