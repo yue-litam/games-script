@@ -21,7 +21,10 @@ def level_info_detection(prefix):
 def annihilation_detection(prefix):
     image = load_resource('annihilation_detection.png', prefix)
     width, _ = image.shape[::-1]
-    return Scene('检测剿灭模式关卡信息介绍页面', identify_image=load_resource('annihilation_detection.png', prefix))
+    return Scene('检测剿灭模式关卡信息介绍页面',
+                 identify_image=load_resource('annihilation_detection.png', prefix),
+                 tap_offset_x=250,
+                 tap_offset_y=30)
 
 
 def annihilation_finish_detection(prefix):
