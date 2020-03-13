@@ -2,7 +2,7 @@ class Device:
     screen_x = 0
     screen_y = 0
 
-    def screen_capture_handler(self, file_name=''):
+    def screen_capture_handler(self, gray=True):
         raise NotImplementedError("Should have implemented this: 截屏方法")
 
     def tap_handler(self, pos_x, pos_y):

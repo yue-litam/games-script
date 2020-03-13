@@ -1,7 +1,8 @@
 import time
+
 from common.scene import Scene
 from common.tool import load_resource
-from azurelane.assist import calculate_move_map
+from games.azurelane.assist import calculate_move_map
 
 
 def difficult_small(prefix):
@@ -37,9 +38,9 @@ def load_target_ship_features(prefix):
         Scene("检测主力舰队", identify_image=load_resource("map_ship_type_3.png", prefix)),  # 判断主力舰队
         Scene("检测运输舰队", identify_image=load_resource("map_ship_type_4.png", prefix)),  # 判断侦查舰队
         Scene("检测舰队等级", identify_image=load_resource("enemy_level.png", prefix), threshold=0.6, tap_offset_y=-55),
-        difficult_small(prefix),   # 小型舰队
+        difficult_small(prefix),  # 小型舰队
         difficult_medium(prefix),  # 中型舰队
-        difficult_large(prefix),   # 大型舰队
+        difficult_large(prefix),  # 大型舰队
         map_move_spec_question_mark(prefix)
     ]
 
@@ -51,37 +52,50 @@ class EnemySearch(Scene):
     red_zones = [
         ((0, 0), (108, 640)),
         ((108, 0), (1062, 53)),
-        ((108, 53), (506, 96)),
-        ((108, 96), (303, 141)),
+        ((108, 53), (783, 96)),
+        ((108, 96), (347, 141)),
         ((1062, 0), (1136, 65)),
         ((1090, 88), (1136, 195)),
         ((1046, 358), (1136, 472)),
         ((580, 557), (1136, 640)),
     ]
+    tap_x = -1
+    tap_y = -1
 
-    def __init__(self, name, identify_image, context, config):
+    def __init__(self, name, identify_image, context, config, prefix):
         super().__init__(name, identify_image)
-        self.ship_features = load_target_ship_features('azurelane/assets/search_ship_feature/')
+        self.ship_features = load_target_ship_features(prefix + 'search_ship_feature/')
         self.context = context
         self.config = config
+        self.swich_team_btn = Scene('切换队伍按钮',
+                                    identify_image=load_resource("switch_team.png",
+                                                                 prefix=prefix + '/scenes_feature/'))
 
-    def before_action(self, _, screen):
-        matched = None
+    def before_action(self, device, screen):
+        if self.config.team_switch and \
+                not self.context.team_switched and \
+                self.context.round_count >= self.config.team_switch_threshold:
+            x, y = self.swich_team_btn.where_to_tap(screen)
+            device.tap_handler(x, y)
+            self.context.team_switched = True
+            print('更换队伍,', end='')
+            time.sleep(3)
+
         for i in range(len(self.ship_features)):
             feature = self.ship_features[i]
             if feature.matched_in(screen):
-                matched = feature
-                break
-        if matched is not None:
-            x, y = matched.where_to_tap(screen)
-            if self.__check_in_red_zone(x, y):
-                self.type = 'swipe'
-            else:
-                self.type = 'tap'
-                self.tap_x = x
-                self.tap_y = y
-        else:
-            self.type = 'swipe'
+                x, y = feature.where_to_tap(screen)
+                if self.__check_in_red_zone(x, y):
+                    self.type = 'swipe'
+                else:
+                    self.type = 'tap'
+                    self.tap_x = x
+                    self.tap_y = y
+                return
+        self.type = 'swipe'
+
+    def where_to_tap(self, screen):
+        return self.tap_x, self.tap_y
 
     def after_action(self, device, screen):
         if self.type == 'tap':

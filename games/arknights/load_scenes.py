@@ -3,6 +3,7 @@ import time
 from common.logutil import logger
 from common.scene import Scene
 from common.tool import load_resource
+from ext.serverchan import program_exit_alert
 
 
 def account_upgrade_detection(prefix):
@@ -42,7 +43,10 @@ def prts_running_scene(prefix):
 def level_team_detection(config, context, prefix):
     def before_action(_1, _2):
         if 0 <= config.repeat_count_max <= context.repeated_count:
-            logger.info('\n\n预设的复读次数已完成')
+            print()
+            cause = '预设的复读次数已完成'
+            logger.info(cause)
+            program_exit_alert(cause)
             exit(0)
         context.repeated_count += 1
         logger.info('第 %03d 次副本' % context.repeated_count)
@@ -68,18 +72,24 @@ def exchange_intellect_by_pharmacy(config, context, prefix):
     def before_action(_1, _2):
         if config.use_pharmacy_max > 0:
             if context.pharmacy_used >= config.use_pharmacy_max:
-                logger.info('已到达预设的可用药剂上限, 脚本将退出')
+                cause = '已到达预设的可用药剂上限, 脚本将退出'
+                logger.info(cause)
+                program_exit_alert(cause)
                 exit(0)
-            else:
-                context.pharmacy_used += 1
         else:
-            logger.info('理智不足，自动退出脚本')
+            cause = '理智不足，自动退出脚本'
+            logger.info(cause)
+            program_exit_alert(cause)
             exit(0)
+
+    def after_action(_1, _2):
+        context.pharmacy_used += 1
 
     s = Scene('检测建议使用药剂补充理智页面',
               identify_image=load_resource('exchange_intellect_by_pharmacy.png', prefix),
               tap_image=load_resource("exchange_intellect_confirm.png", prefix))
     s.before_action = before_action
+    s.after_action = after_action
     return s
 
 
@@ -87,12 +97,16 @@ def exchange_intellect_by_stone(config, context, prefix):
     def before_action(_1, _2):
         if config.use_stone_max > 0:
             if context.stone_used >= config.use_stone_max:
-                logger.info('已到达预设的可用源石上限, 脚本将退出')
+                cause = "已到达预设的可用源石上限, 脚本将退出"
+                logger.info(cause)
+                program_exit_alert(cause)
                 exit(0)
             else:
                 context.stone_used += 1
         else:
-            logger.info('理智不足，自动退出脚本')
+            cause = '理智不足，自动退出脚本'
+            logger.info(cause)
+            program_exit_alert(cause)
             exit(0)
 
     s = Scene('检测建议使用石头补充理智页面',
@@ -103,6 +117,7 @@ def exchange_intellect_by_stone(config, context, prefix):
 
 
 def load_scenes(prefix, config, context):
+    prefix += "scenes_feature/"
     return [
         prts_disable_detection(prefix),  # 战斗关卡确认出击
         account_upgrade_detection(prefix),  # 战斗结束后账号等级提升

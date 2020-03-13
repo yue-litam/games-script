@@ -30,7 +30,7 @@ class MakeFileHandler(logging.FileHandler):
 
 logging.handlers.MakeFileHandler = MakeFileHandler
 # see reference: https://www.jianshu.com/p/feb86c06c4f4
-logging.config.fileConfig("conf/logging.conf")
+logging.config.fileConfig("./conf/logging.conf")
 
 # create logger
 logger = logging.getLogger()

@@ -1,8 +1,10 @@
+import time
+
 from common.logutil import logger
 from common.scene import Scene
 from common.tool import *
-from azurelane.scenes.enemy_search import EnemySearch
-import time
+from ext.serverchan import program_exit_alert
+from games.azurelane.scenes.enemy_search import EnemySearch
 
 
 def battle_fighting(prefix):
@@ -15,7 +17,8 @@ def battle_fighting(prefix):
 
 def battle_strike_confirm(prefix):
     return Scene("检测指定关卡出击确认",
-                 identify_image=load_resource("safe_lane.png", prefix),
+                 identify_image=load_resource("choose_level_go_now_button.png", prefix),
+                 # identify_image=load_resource("safe_lane.png", prefix),
                  tap_image=load_resource("choose_level_go_now_button.png", prefix))
 
 
@@ -23,7 +26,9 @@ def battle_team_choose(config, context, prefix):
     def before_action(_1, _2):
         if 0 <= config.repeat_count_max <= context.repeated_count:
             print()
-            logger.info('预设的复读次数已完成')
+            cause = "预设的复读次数已完成"
+            logger.info(cause)
+            program_exit_alert(cause)
             exit(0)
         context.repeated_count += 1
         context.round_count = 0
@@ -84,10 +89,12 @@ def battle_finished_team_exp(prefix):
     return s
 
 
-def wife_unhappy(prefix):
+def wife_unhappy(prefix, context):
     def before_action(_1, _2):
         print()
-        logger.info('队伍存在舰娘心情警告，指挥官休息一下吧')
+        cause = "队伍存在舰娘心情警告，指挥官休息一下吧"
+        logger.info(cause)
+        program_exit_alert(cause)
         exit(0)
 
     s = Scene("检测舰娘心情值偏低",
@@ -96,10 +103,12 @@ def wife_unhappy(prefix):
     return s
 
 
-def shipyard_full(prefix):
+def shipyard_full(prefix, context):
     def before_action(_1, _2):
         print()
-        logger.info('船坞满了，指挥官清理一下喵')
+        cause = "船坞满了，指挥官清理一下喵"
+        logger.info(cause)
+        program_exit_alert(cause)
         exit(0)
 
     s = Scene("检测船坞已满提示",
@@ -142,32 +151,43 @@ def battle_special_info(prefix):
                  tap_image=load_resource("confirm.png", prefix))
 
 
-def enemy_search(prefix, config, context):
+def enemy_search(prefix_scene, prefix, config, context):
     return EnemySearch("开始索敌",
-                       load_resource("fallback_and_switch_btn.png", prefix),
-                       context, config)
+                       load_resource("fallback_and_switch_btn.png", prefix_scene),
+                       context, config, prefix)
+
+
+def use_special_ticket(prefix):
+    return Scene("特别行动:战斗!皇家女仆队2",
+                 identify_image=load_resource("use_special_ticket.png", prefix),
+                 tap_image=load_resource("use.png", prefix))
 
 
 def load_scenes(prefix, config, context):
+    prefix_scene = prefix + "scenes_feature/"
+    prefix_battle = prefix + "select_battle_feature/"
+    prefix_target = prefix + "search_ship_feature/"
     return [
-        wife_unhappy(prefix),  # this is most important!
-        shipyard_full(prefix),
-        battle_auto_fight_enable(prefix),
-        battle_auto_fight_warning(prefix),
-        close_simple_info_box(prefix),
+        wife_unhappy(prefix_scene, context),  # this is most important!
+        shipyard_full(prefix_scene, context),
+        battle_auto_fight_enable(prefix_scene),
+        battle_auto_fight_warning(prefix_scene),
+        use_special_ticket(prefix_scene),
+        close_simple_info_box(prefix_scene),
 
-        battle_entry(config.battle_no, 'azurelane/assets/select_battle_feature/'),
-        battle_strike_confirm(prefix),
-        battle_team_choose(config, context, prefix),
-        battle_special_info(prefix),
-        evade_ambush(prefix),
-        enemy_search(prefix, config, context),  # 索敌
+        battle_entry(config.battle_no, prefix_battle),
+        battle_strike_confirm(prefix_scene),
+        battle_team_choose(config, context, prefix_scene),
+        battle_special_info(prefix_scene),
+        evade_ambush(prefix_scene),
 
-        battle_prepare(context, prefix),
-        battle_fighting(prefix),
-        battle_finished_evaluation(prefix),
-        battle_finished_item_list_check(prefix),
-        battle_finished_super_rare_character_confirm(prefix),
-        battle_finished_lock_new_character(prefix),
-        battle_finished_team_exp(prefix)
+        battle_prepare(context, prefix_scene),
+        battle_fighting(prefix_scene),
+        battle_finished_evaluation(prefix_scene),
+        battle_finished_item_list_check(prefix_scene),
+        battle_finished_super_rare_character_confirm(prefix_scene),
+        battle_finished_lock_new_character(prefix_scene),
+        battle_finished_team_exp(prefix_scene),
+
+        enemy_search(prefix_scene, prefix, config, context)  # 索敌
     ]

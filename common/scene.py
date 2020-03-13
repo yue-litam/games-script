@@ -12,9 +12,6 @@ class Scene:
     tap_image = None       # 该场景点击位置的特征照片
     threshold = 0.8        # 匹配度，默认80%，可根据不同的素材调整
 
-    tap_x = -1
-    tap_y = -1
-
     def __init__(self, name, identify_image, action_type="tap",
                  tap_image=None, tap_offset_x=0, tap_offset_y=0,
                  threshold=0.8
@@ -36,14 +33,9 @@ class Scene:
         raise NotImplemented('Scene Unknown how to swipe.')
 
     def where_to_tap(self, screen):
-        if self.tap_x != -1:
-            x, y = self.tap_x, self.tap_y
-            self.tap_x = -1
-            self.tap_y = -1
-        else:
-            x, y = tool.find_click_position(self.tap_image, screen)
-            x += self.tap_offset_x
-            y += self.tap_offset_y
+        x, y = tool.find_click_position(self.tap_image, screen)
+        x += self.tap_offset_x
+        y += self.tap_offset_y
         return x, y
 
     def perform_what(self):
