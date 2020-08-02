@@ -1,5 +1,5 @@
 ### project files ###
-temp/
+temp/*.*
 logs/
 conf/config.ini
 
@@ -10,6 +10,7 @@ __pycache__/
 ### jetbrain pycharm ###
 .idea/
 *.iml
+venv/
 
 ### macOS ###
 .DS_Store

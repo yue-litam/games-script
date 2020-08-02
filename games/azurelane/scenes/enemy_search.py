@@ -33,15 +33,16 @@ def load_target_ship_features(prefix):
     return [
         Scene("检测旗舰", identify_image=load_resource("boss_icon_detection2.png", prefix), threshold=0.7),
         Scene("检测旗舰（带人物）", identify_image=load_resource("boss_small.png", prefix), threshold=0.7),
+        Scene("检测旗舰2（带人物）", identify_image=load_resource("boss_small2.png", prefix), threshold=0.7),
         Scene("检测侦查舰队", identify_image=load_resource("map_ship_type_1.png", prefix)),  # 判断
         Scene("检测航母舰队", identify_image=load_resource("map_ship_type_2.png", prefix)),  # 判断航母舰队
         Scene("检测主力舰队", identify_image=load_resource("map_ship_type_3.png", prefix)),  # 判断主力舰队
         Scene("检测运输舰队", identify_image=load_resource("map_ship_type_4.png", prefix)),  # 判断侦查舰队
         Scene("检测舰队等级", identify_image=load_resource("enemy_level.png", prefix), threshold=0.6, tap_offset_y=-55),
         difficult_small(prefix),  # 小型舰队
-        difficult_medium(prefix),  # 中型舰队
+        difficult_medium(prefix), # 中型舰队
         difficult_large(prefix),  # 大型舰队
-        map_move_spec_question_mark(prefix)
+        map_move_spec_question_mark(prefix),
     ]
 
 

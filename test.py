@@ -35,14 +35,19 @@ def main():
     # screen_gray = cv2.imread(image_path, 0)
 
     feature_paths = [
-        ('./games/azurelane/assets/select_battle_feature/battle_stet_sp1.png', 0.7),
-        ('./games/azurelane/assets/select_battle_feature/battle_stet_sp2.png', 0.7),
-        ('./games/azurelane/assets/select_battle_feature/battle_stet_sp3.png', 0.7),
         # ('./games/azurelane/assets/search_ship_feature/map_ship_type_1.png', 0.7),
         # ('./games/azurelane/assets/search_ship_feature/map_ship_type_2.png', 0.7),
         # ('./games/azurelane/assets/search_ship_feature/map_ship_type_3.png', 0.7),
         # ('./games/azurelane/assets/search_ship_feature/map_ship_type_3_.png', 0.7),
         # ('./games/azurelane/assets/search_ship_feature/map_ship_type_4.png', 0.8),
+        # ('./games/azurelane/assets/search_ship_feature/enemy_level.png', 0.7),
+        # ('./games/azurelane/assets/search_ship_feature/difficult_medium.png', 0.7),
+        # ('./games/azurelane/assets/search_ship_feature/map_ship_typeb_3.png', 0.7),
+        # ('./games/azurelane/assets/search_ship_feature/boss_icon_detection.png', 0.7),
+        # ('./games/azurelane/assets/search_ship_feature/boss_icon_detection2.png', 0.7),
+        # ('./games/azurelane/assets/search_ship_feature/boss_small.png', 0.7),
+        # ('./games/azurelane/assets/search_ship_feature/boss_small2.png', 0.7),
+        ('./games/azurelane/assets/search_ship_feature/explore_map_question_mark.png', 0.7),
     ]
     for fp in feature_paths:
         feature = cv2.imread(fp[0], 0)

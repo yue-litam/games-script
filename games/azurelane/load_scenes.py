@@ -15,10 +15,24 @@ def battle_fighting(prefix):
     return s
 
 
-def battle_strike_confirm(prefix):
+def battle_safe_lane_strike_confirm(prefix):
     return Scene("检测指定关卡出击确认",
-                 identify_image=load_resource("choose_level_go_now_button.png", prefix),
-                 # identify_image=load_resource("safe_lane.png", prefix),
+                 # identify_image=load_resource("choose_level_go_now_button.png", prefix),
+                 identify_image=load_resource("safe_lane.png", prefix),
+                 tap_image=load_resource("choose_level_go_now_button.png", prefix))
+
+
+def battle_danger_lane_strike_confirm(prefix):
+    return Scene("检测指定关卡出击确认",
+                 # identify_image=load_resource("choose_level_go_now_button.png", prefix),
+                 identify_image=load_resource("danger_lane.png", prefix),
+                 tap_image=load_resource("choose_level_go_now_button.png", prefix))
+
+
+def battle_highly_danger_lane_strike_confirm(prefix):
+    return Scene("检测指定关卡出击确认",
+                 # identify_image=load_resource("choose_level_go_now_button.png", prefix),
+                 identify_image=load_resource("highly_danger_lane.png", prefix),
                  tap_image=load_resource("choose_level_go_now_button.png", prefix))
 
 
@@ -92,7 +106,7 @@ def battle_finished_team_exp(prefix):
 def wife_unhappy(prefix, context):
     def before_action(_1, _2):
         print()
-        cause = "队伍存在舰娘心情警告，指挥官休息一下吧"
+        cause = "队伍存在舰娘心情警告，指挥官休息一下吧，已出击" + str(context.repeated_count) + "次"
         logger.info(cause)
         program_exit_alert(cause)
         exit(0)
@@ -106,7 +120,7 @@ def wife_unhappy(prefix, context):
 def shipyard_full(prefix, context):
     def before_action(_1, _2):
         print()
-        cause = "船坞满了，指挥官清理一下喵"
+        cause = "船坞满了，指挥官清理一下喵，已出击" + str(context.repeated_count) + "次"
         logger.info(cause)
         program_exit_alert(cause)
         exit(0)
@@ -176,7 +190,9 @@ def load_scenes(prefix, config, context):
         close_simple_info_box(prefix_scene),
 
         battle_entry(config.battle_no, prefix_battle),
-        battle_strike_confirm(prefix_scene),
+        battle_safe_lane_strike_confirm(prefix_scene),
+        battle_danger_lane_strike_confirm(prefix_scene),
+        battle_highly_danger_lane_strike_confirm(prefix_scene),
         battle_team_choose(config, context, prefix_scene),
         battle_special_info(prefix_scene),
         evade_ambush(prefix_scene),
