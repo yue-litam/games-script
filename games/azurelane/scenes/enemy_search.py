@@ -51,14 +51,15 @@ class EnemySearch(Scene):
     config = None
     ship_features = []
     red_zones = [
-        ((0, 0), (108, 640)),
-        ((108, 0), (1062, 53)),
-        ((108, 53), (783, 96)),
-        ((108, 96), (347, 141)),
-        ((1062, 0), (1136, 65)),
-        ((1090, 88), (1136, 195)),
-        ((1046, 358), (1136, 472)),
-        ((580, 557), (1136, 640)),
+        ((0, 0), (108, 640)),       # 左侧队伍预览
+        ((108, 0), (1062, 53)),     # 顶部信息栏(石油、金币、钻石)
+        ((108, 53), (783, 96)),     # 舰队编号、制空值
+        ((108, 96), (347, 141)),    # 舰队属性(小图标、指挥喵加成)
+        ((108, 141), (347, 256)),   # 7-2地图左上角容易引发不可达路径的禁区
+        ((1062, 0), (1136, 65)),    # 
+        ((1090, 88), (1136, 195)),  # 星级预览
+        ((1046, 358), (1136, 472)), # 损管、阵型切换
+        ((580, 557), (1136, 640)),  # 撤退、切换、迎击按钮
     ]
     tap_x = -1
     tap_y = -1
@@ -84,15 +85,21 @@ class EnemySearch(Scene):
 
         for i in range(len(self.ship_features)):
             feature = self.ship_features[i]
-            if feature.matched_in(screen):
-                x, y = feature.where_to_tap(screen)
-                if self.__check_in_red_zone(x, y):
-                    self.type = 'swipe'
-                else:
-                    self.type = 'tap'
-                    self.tap_x = x
-                    self.tap_y = y
-                return
+            possible_targets = feature.matched_in(screen)
+            if len(possible_targets) > 0:
+                for j in range(len(possible_targets)):
+                    # x, y = feature.where_to_tap(screen)
+                    x, y = possible_targets[j][0], possible_targets[j][1]
+                    x += feature.tap_offset_x
+                    y += feature.tap_offset_y
+                    if self.__check_in_red_zone(x, y):
+                        # self.type = 'swipe'
+                        continue
+                    else:
+                        self.type = 'tap'
+                        self.tap_x = x
+                        self.tap_y = y
+                        return
         self.type = 'swipe'
 
     def where_to_tap(self, screen):

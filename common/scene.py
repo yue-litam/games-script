@@ -27,7 +27,7 @@ class Scene:
         self.__check()
 
     def matched_in(self, screen):
-        return tool.get_similarity(self.identify_image, screen, self.threshold) == 1
+        return tool.get_similarity(self.identify_image, screen, self.threshold)
 
     def how_to_swipe(self):
         raise NotImplemented('Scene Unknown how to swipe.')

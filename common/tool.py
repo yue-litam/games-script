@@ -2,16 +2,24 @@
 
 import cv2
 import numpy as np
+from common.logutil import logger
 
 
 def get_similarity(template, screen, threshold=0.8):
     res = cv2.matchTemplate(screen, template, cv2.TM_CCOEFF_NORMED)
     loc = np.where(res >= threshold)
-    found = 0
-    for _ in zip(*loc[::-1]):
-        found = 1
-        break
-    return found
+    possible_targets = []
+    w, h = template.shape[::-1]
+    for possible_target in zip(*loc[::-1]):
+        x, y = possible_target[0] + w / 2, possible_target[1] + h / 2
+        if len(possible_targets) > 0:
+            last = possible_targets[len(possible_targets) - 1]
+            if x - last[0] > 30: # 误差在30内视为同一个区域
+                possible_targets.append((x, y))
+        else:
+            possible_targets.append((x, y))
+    logger.debug(possible_targets)
+    return possible_targets
 
 
 def device_detect_feature_location_handler(feature, screen):

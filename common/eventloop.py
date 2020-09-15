@@ -28,7 +28,8 @@ class EventLoop:
         # 场景匹配
         matched = None
         for scene in self.scenes:
-            if scene.matched_in(screen):
+            possible_targets = scene.matched_in(screen)
+            if len(possible_targets) > 0:
                 matched = scene
                 logger.debug('match scene {}'.format(matched.name))
                 break
