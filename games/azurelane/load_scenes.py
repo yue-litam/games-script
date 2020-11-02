@@ -1,6 +1,5 @@
 import time
 
-from common.logutil import logger
 from common.scene import Scene
 from common.tool import *
 from ext.serverchan import program_exit_alert
@@ -59,16 +58,10 @@ def battle_team_choose(config, context, prefix):
     return s
 
 
-def battle_prepare(context, prefix):
-    def before_action(_1, _2):
-        context.round_count += 1
-        print('%s 次出击' % context.round_count, end=',', sep='', flush=True)
-
-    s = Scene("检测出击队伍阵型调整",
-              identify_image=load_resource("battle_prepare.png", prefix),
-              tap_image=load_resource("battle_preview_start_button.png", prefix))
-    s.before_action = before_action
-    return s
+def battle_prepare(prefix):
+    return Scene("检测出击队伍阵型调整",
+                 identify_image=load_resource("battle_prepare.png", prefix),
+                 tap_image=load_resource("battle_preview_start_button.png", prefix))
 
 
 def battle_finished_evaluation(prefix):
@@ -96,11 +89,16 @@ def battle_finished_lock_new_character(prefix):
     return s
 
 
-def battle_finished_team_exp(prefix):
+def battle_finished_team_exp(context, prefix):
+    def after_action(_1, _2):
+        context.round_count += 1
+        print('%s 次出击' % context.round_count, end=',', sep='', flush=True)
+        time.sleep(5)
+
     s = Scene("检测战斗完成经验结算界面",
               identify_image=load_resource("battle_post_confirm_detection.png", prefix),
               tap_image=load_resource("battle_post_confirm_button.png", prefix))
-    s.after_action = lambda _1, _2: time.sleep(5)
+    s.after_action = after_action
     return s
 
 
@@ -179,9 +177,8 @@ def use_special_ticket(prefix):
 
 
 def load_scenes(prefix, config, context):
-    prefix_scene = prefix + "scenes_feature/"
-    prefix_battle = prefix + "select_battle_feature/"
-    prefix_target = prefix + "search_ship_feature/"
+    prefix_scene = prefix + "scenes_feature/" + config.language + "/"
+    prefix_battle = prefix + "select_battle_feature/" + config.language + "/"
     return [
         wife_unhappy(prefix_scene, context),  # this is most important!
         shipyard_full(prefix_scene, context),
@@ -198,13 +195,13 @@ def load_scenes(prefix, config, context):
         battle_special_info(prefix_scene),
         evade_ambush(prefix_scene),
 
-        battle_prepare(context, prefix_scene),
+        battle_prepare(prefix_scene),
         battle_fighting(prefix_scene),
         battle_finished_evaluation(prefix_scene),
         battle_finished_item_list_check(prefix_scene),
         battle_finished_super_rare_character_confirm(prefix_scene),
         battle_finished_lock_new_character(prefix_scene),
-        battle_finished_team_exp(prefix_scene),
+        battle_finished_team_exp(context, prefix_scene),
 
         enemy_search(prefix_scene, prefix, config, context)  # 索敌
     ]

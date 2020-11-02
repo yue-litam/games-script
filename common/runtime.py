@@ -13,6 +13,7 @@ class Config:
     screenshot_to_disk_file_name = None
 
     # ---- azurelane config ----
+    language = "zh-cn"
     battle_no = ""
     default_swipe_direction = 0
     team_switch = False
@@ -39,6 +40,7 @@ class Config:
         self.use_stone_max = cfg.getint('arknights', 'use_stone_max')
         self.use_pharmacy_max = cfg.getint('arknights', 'use_pharmacy_max')
 
+        self.language = cfg.get('azurelane', 'language')
         self.battle_no = cfg.get('azurelane', 'battle_no')
         self.default_swipe_direction = cfg.getint('azurelane', 'default_swipe_direction')
         self.team_switch = cfg.getboolean('azurelane', 'team_switch')
@@ -69,6 +71,7 @@ class Config:
         elif args_count > 1 and args[1] == '-h' or args[1] == '--help':
             print('  -h,  --help         查看所有支持的参数')
             print('  -g,  --game         游戏名称，枚举:azurelane, arknights, girlsfrontline')
+            print('  -L,  --language     语言')
             print('  -r,  --repeat       复读次数')
             print('  -s,  --save         屏幕截图是否保存到本地磁盘')
             print('  -sf, --save-file    屏幕截图保存到本地磁盘的路径')
@@ -83,21 +86,23 @@ class Config:
             offset = 1
             for i in range(pairs):
                 name_index = i * 2 + offset
-                valv_index = name_index + 1
+                value_index = name_index + 1
                 if args[name_index] == '-g' or args[name_index] == '--game':
-                    self.game_name = args[valv_index]
+                    self.game_name = args[value_index]
                 elif args[name_index] == '-r' or args[name_index] == '--repeat':
-                    self.repeat_count_max = int(args[valv_index])
+                    self.repeat_count_max = int(args[value_index])
+                elif args[name_index] == '-L' or args[name_index] == '--language':
+                    self.language = int(args[value_index])
                 elif args[name_index] == '-s' or args[name_index] == '--save':
-                    self.screenshot_to_disk = bool(args[valv_index])
+                    self.screenshot_to_disk = bool(args[value_index])
                 elif args[name_index] == '-sf' or args[name_index] == '--save-file':
-                    self.screenshot_to_disk_file_name = args[valv_index]
+                    self.screenshot_to_disk_file_name = args[value_index]
                 elif args[name_index] == '-azlb':
-                    self.battle_no = args[valv_index]
+                    self.battle_no = args[value_index]
                 elif args[name_index] == '-arkp':
-                    self.use_pharmacy_max = int(args[valv_index])
+                    self.use_pharmacy_max = int(args[value_index])
                 elif args[name_index] == '-arks':
-                    self.use_stone_max = int(args[valv_index])
+                    self.use_stone_max = int(args[value_index])
 
     def __str__(self):
         _str = '\n'
@@ -109,6 +114,7 @@ class Config:
             _str += '  - 自动使用药剂:{0}\n'.format(self.use_pharmacy_max)
             _str += '  - 自动使用石头:{0}\n'.format(self.use_stone_max)
         elif self.game_name == 'azurelane':
+            _str += ' - 服务器: {}\n'.format(self.language)
             _str += ' - 关卡: {}\n'.format(self.battle_no)
         _str += '\n'
         return _str

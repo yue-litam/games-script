@@ -71,7 +71,7 @@ class EnemySearch(Scene):
         self.config = config
         self.swich_team_btn = Scene('切换队伍按钮',
                                     identify_image=load_resource("switch_team.png",
-                                                                 prefix=prefix + '/scenes_feature/'))
+                                                                 prefix=prefix + '/scenes_feature/' + config.language + '/'))
 
     def before_action(self, device, screen):
         if self.config.team_switch and \
