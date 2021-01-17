@@ -15,7 +15,6 @@ class Config:
     # ---- azurelane config ----
     language = "zh-cn"
     battle_no = ""
-    default_swipe_direction = 0
     team_switch = False
     team_switch_threshold = 5
 
@@ -42,7 +41,6 @@ class Config:
 
         self.language = cfg.get('azurelane', 'language')
         self.battle_no = cfg.get('azurelane', 'battle_no')
-        self.default_swipe_direction = cfg.getint('azurelane', 'default_swipe_direction')
         self.team_switch = cfg.getboolean('azurelane', 'team_switch')
         self.team_switch_threshold = cfg.getint('azurelane', 'team_switch_threshold')
 
@@ -132,7 +130,10 @@ class Context:
     # ---- azurelane ----
     search_enemy = False  # 进入索敌界面
     team_switched = False
-    swipe_mode = 0  # 索敌为空时，移动地图方向，0=向上滑动，1=向右滑动，2=向下滑动，3=向左滑动
+    swipe_hor_times = 0    # 画面向上移动次数
+    swipe_hor_positive = True
+    swipe_ver_times = 0    # 画面向左移动次数
+    swipe_ver_positive = True
     round_count = 0
 
     # ---- arknights ----

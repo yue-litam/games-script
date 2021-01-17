@@ -9,5 +9,5 @@
 10. xcode 使用 webdriveragentrunner 模式，切换指定设备，cmd+u运行test
 11. iphone 信任证书，test 启动成功
 12. 安装 libimobiledevice 运行 iproxy 8100 8100
-13. clone game-script & pip3 install -r requirements.txt
+13. clone game-script & pip3 install -r requirements.txt --no-cache-dir
 14. python3 start.py -h

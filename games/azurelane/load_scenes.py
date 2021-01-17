@@ -45,7 +45,8 @@ def battle_team_choose(config, context, prefix):
             exit(0)
         context.repeated_count += 1
         context.round_count = 0
-        context.swipe_mode = config.default_swipe_direction
+        context.swipe_hor_times = 0
+        context.swipe_ver_times = 0
         context.team_switched = False
         print('')
         logger.info('第 %03d 次副本' % context.repeated_count)
