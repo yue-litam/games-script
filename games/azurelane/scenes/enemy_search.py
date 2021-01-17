@@ -29,11 +29,16 @@ def map_move_spec_question_mark(prefix):
                  tap_offset_y=50)
 
 
-def load_target_ship_features(prefix):
+def load_boss_ship_features(prefix):
     return [
         Scene("检测旗舰", identify_image=load_resource("boss_icon_detection2.png", prefix), threshold=0.7),
         Scene("检测旗舰（带人物）", identify_image=load_resource("boss_small.png", prefix), threshold=0.7),
         Scene("检测旗舰2（带人物）", identify_image=load_resource("boss_small2.png", prefix), threshold=0.7),
+    ]
+
+
+def load_fish_ship_features(prefix):
+    return [
         map_move_spec_question_mark(prefix),
         Scene("检测侦查舰队", identify_image=load_resource("map_ship_type_1.png", prefix)),  # 判断
         Scene("检测航母舰队", identify_image=load_resource("map_ship_type_2.png", prefix)),  # 判断航母舰队
@@ -49,7 +54,8 @@ def load_target_ship_features(prefix):
 class EnemySearch(Scene):
     context = None
     config = None
-    ship_features = []
+    boss_features = []
+    fish_features = []
     red_zones = [
         ((0, 0), (108, 640)),       # 左侧队伍预览
         ((108, 0), (1062, 53)),     # 顶部信息栏(石油、金币、钻石)
@@ -66,7 +72,8 @@ class EnemySearch(Scene):
 
     def __init__(self, name, identify_image, context, config, prefix):
         super().__init__(name, identify_image)
-        self.ship_features = load_target_ship_features(prefix + 'search_ship_feature/')
+        self.fish_features = load_fish_ship_features(prefix + 'search_ship_feature/')
+        self.boss_features = load_boss_ship_features(prefix + 'search_ship_feature/')
         self.context = context
         self.config = config
         self.swich_team_btn = Scene('切换队伍按钮',
@@ -81,10 +88,16 @@ class EnemySearch(Scene):
             device.tap_handler(x, y)
             self.context.team_switched = True
             print('更换队伍,', end='')
-            time.sleep(5)
+            self.type = 'wait'
+            return
 
-        for i in range(len(self.ship_features)):
-            feature = self.ship_features[i]
+        if self.context.team_switched:
+            features = self.boss_features
+        else:
+            features = self.fish_features
+
+        for i in range(len(features)):
+            feature = features[i]
             possible_targets = feature.matched_in(screen)
             if len(possible_targets) > 0:
                 for j in range(len(possible_targets)):
@@ -93,7 +106,6 @@ class EnemySearch(Scene):
                     x += feature.tap_offset_x
                     y += feature.tap_offset_y
                     if self.__check_in_red_zone(x, y):
-                        # self.type = 'swipe'
                         continue
                     else:
                         self.type = 'tap'

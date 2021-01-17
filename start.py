@@ -17,7 +17,6 @@ def load_scenes(config, context):
     if config.game_name == 'arknights':
         return arknights_scenes(prefix, config, context)
     elif config.game_name == 'azurelane':
-        context.swipe_mode = config.default_swipe_direction
         return azurelane_scenes(prefix, config, context)
     elif config.game_name == 'girlsfrontline':
         return gf_scenes(prefix, config, context)
