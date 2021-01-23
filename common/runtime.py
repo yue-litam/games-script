@@ -17,6 +17,7 @@ class Config:
     battle_no = ""
     team_switch = False
     team_switch_threshold = 5
+    enable_custom_enemy_search = False
 
     # ---- arknights config ----
     use_pharmacy_max = 0
@@ -43,6 +44,7 @@ class Config:
         self.battle_no = cfg.get('azurelane', 'battle_no')
         self.team_switch = cfg.getboolean('azurelane', 'team_switch')
         self.team_switch_threshold = cfg.getint('azurelane', 'team_switch_threshold')
+        self.enable_custom_enemy_search = cfg.getboolean('azurelane', 'enable_custom_enemy_search')
 
         self.max_like_dormitory = cfg.getint('girlsfrontline', 'max_like_dormitory')
         if self.game_name == 'arknights':

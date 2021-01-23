@@ -177,16 +177,33 @@ def use_special_ticket(prefix):
                  tap_image=load_resource("use.png", prefix))
 
 
+def continue_next_auto_fight(prefix, config, context):
+    def before_action(_1, _2):
+        if 0 <= config.repeat_count_max <= context.repeated_count:
+            cause = "预设的复读次数已完成"
+            logger.info(cause)
+            program_exit_alert(cause)
+            exit(0)
+        context.repeated_count += 1
+        context.round_count = 0
+        logger.info('第 %03d 次副本' % context.repeated_count)
+
+    s = Scene("继续下次自律战斗",
+              identify_image=load_resource("auto_fight_item_collections.png", prefix),
+              tap_image=load_resource("continue_next_auto_fight_confirm.png", prefix))
+    s.before_action = before_action
+    return s
+
+
 def load_scenes(prefix, config, context):
     prefix_scene = prefix + "scenes_feature/" + config.language + "/"
     prefix_battle = prefix + "select_battle_feature/" + config.language + "/"
-    return [
+    scenes = [
         wife_unhappy(prefix_scene, context),  # this is most important!
         shipyard_full(prefix_scene, context),
         battle_auto_fight_enable(prefix_scene),
         battle_auto_fight_warning(prefix_scene),
         use_special_ticket(prefix_scene),
-        close_simple_info_box(prefix_scene),
 
         battle_entry(config.battle_no, prefix_battle),
         battle_safe_lane_strike_confirm(prefix_scene),
@@ -194,15 +211,18 @@ def load_scenes(prefix, config, context):
         battle_highly_danger_lane_strike_confirm(prefix_scene),
         battle_team_choose(config, context, prefix_scene),
         battle_special_info(prefix_scene),
-        evade_ambush(prefix_scene),
-
-        battle_prepare(prefix_scene),
-        battle_fighting(prefix_scene),
-        battle_finished_evaluation(prefix_scene),
-        battle_finished_item_list_check(prefix_scene),
-        battle_finished_super_rare_character_confirm(prefix_scene),
-        battle_finished_lock_new_character(prefix_scene),
-        battle_finished_team_exp(context, prefix_scene),
-
-        enemy_search(prefix_scene, prefix, config, context)  # 索敌
     ]
+    if config.enable_custom_enemy_search:
+        scenes.append(evade_ambush(prefix_scene))
+        scenes.append(battle_prepare(prefix_scene))
+        scenes.append(battle_fighting(prefix_scene))
+        scenes.append(battle_finished_evaluation(prefix_scene))
+        scenes.append(battle_finished_item_list_check(prefix_scene))
+        scenes.append(battle_finished_super_rare_character_confirm(prefix_scene))
+        scenes.append(battle_finished_lock_new_character(prefix_scene))
+        scenes.append(battle_finished_team_exp(context, prefix_scene))
+        scenes.append(enemy_search(prefix_scene, prefix, config, context))
+        scenes.append(close_simple_info_box(prefix_scene))
+    else:
+        scenes.append(continue_next_auto_fight(prefix_scene, config, context))
+    return scenes
