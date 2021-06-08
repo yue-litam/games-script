@@ -14,4 +14,4 @@ urllib3==1.25.3
 opencv-python==4.1.0.25
 facebook-wda==0.3.6
 Appium-Python-Client==0.47
-Pillow==6.2.0
+Pillow==8.2.0
